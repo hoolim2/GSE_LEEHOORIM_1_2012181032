@@ -14,17 +14,17 @@ but WITHOUT ANY WARRANTY.
 #include "Dependencies\freeglut.h"
 
 #include "Renderer.h"
+#include "Object.h"
 
 Renderer *g_Renderer = NULL;
-
+Object a(0,0,0,50,1,1,1,1);
 void RenderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
 	// Renderer Test
-	g_Renderer->DrawSolidRect(0, 0, 0, 4, 1, 0, 1, 1);
-
+	g_Renderer->DrawSolidRect(a.x, a.y, a.z, a.size, a.r, a.g, a.b, a.a);
 	glutSwapBuffers();
 }
 
