@@ -17,14 +17,22 @@ but WITHOUT ANY WARRANTY.
 #include "Object.h"
 
 Renderer *g_Renderer = NULL;
-Object a(0,0,0,50,1,1,1,1);
+Object a(0,0,0,10,1,1,1,1,5,1,1);
+
+int objnum=0;
+bool mousech = true;
+
 void RenderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
 	// Renderer Test
-	g_Renderer->DrawSolidRect(a.x, a.y, a.z, a.size, a.r, a.g, a.b, a.a);
+		g_Renderer->DrawSolidRect(a.x, a.y, a.z, a.size, a.r, a.g, a.b, a.a);
+		a.Update();
+	if(mousech==true)
+		g_Renderer->DrawSolidRect(0,0,0,20,1,1,1,1);
+	
 	glutSwapBuffers();
 }
 
@@ -35,6 +43,22 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
+	if (button == GLUT_LEFT_BUTTON)
+	{
+		if (state == GLUT_UP)
+		{
+			a.x = x-250;
+			a.y = -y+250;
+
+				a.vecx = a.vecx*-1;
+				a.vecy = a.vecy*-1;
+
+			if (mousech)
+				mousech = false;
+			else if (!mousech)
+				mousech = true;
+		}
+	}
 	RenderScene();
 }
 
