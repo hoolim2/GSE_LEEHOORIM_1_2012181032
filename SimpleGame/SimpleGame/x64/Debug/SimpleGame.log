@@ -1,6 +1,11 @@
-﻿  SceneMngr.cpp
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.h(11): error C2143: 구문 오류: ';'이(가) '*' 앞에 없습니다.
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.h(11): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.h(11): error C2238: ';' 앞에 예기치 않은 토큰이 있습니다.
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.cpp(7): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.cpp(8): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  SimpleGame.cpp
+c:\2dgp\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(27): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+c:\2dgp\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(91): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\2dgp\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(92): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  SceneMngr.cpp
+c:\2dgp\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.cpp(8): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\2dgp\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.cpp(9): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Object.cpp
+  코드를 생성하고 있습니다...
+  SimpleGame.vcxproj -> C:\2dGP\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.exe
+  SimpleGame.vcxproj -> C:\2dGP\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.pdb (Partial PDB)

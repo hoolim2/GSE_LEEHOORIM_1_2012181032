@@ -1,13 +1,16 @@
 #pragma once
+#include "Object.h"
+#define MAX_OBJECTS_COUNT 50
+
 class SceneMngr
 {
 public:
 	SceneMngr();
 	~SceneMngr();
 
-	void Add();
+	void Add(Object** a);
 	void Update();
 
-	Object *m_objects[50];
+	Object *m_objects[MAX_OBJECTS_COUNT];
 };
 

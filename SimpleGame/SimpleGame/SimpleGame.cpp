@@ -17,12 +17,16 @@ but WITHOUT ANY WARRANTY.
 #include "Object.h"
 #include <cstdlib>
 #include "ctime"
+#include "SceneMngr.h"
 
+#define MAX_OBJECTS_COUNT 50
 
 bool mousech = true;
 
 Renderer *g_Renderer = NULL;
 Object a(0,0,0,10,1,1,1,1,5,0.7,1);
+Object *b[50];
+SceneMngr SM;
 
 
 void RenderScene(void)
@@ -32,6 +36,8 @@ void RenderScene(void)
 
 	// Renderer Test
 		g_Renderer->DrawSolidRect(a.x, a.y, a.z, a.size, a.r, a.g, a.b, a.a);
+		for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+			g_Renderer->DrawSolidRect(b[i]->x, b[i]->y, b[i]->z, b[i]->size, b[i]->r, b[i]->g, b[i]->b, b[i]->a);
 		a.Update();
 	if(mousech==true)
 		g_Renderer->DrawSolidRect(0,0,0,20,1,1,1,1);
@@ -77,6 +83,16 @@ void SpecialKeyInput(int key, int x, int y)
 
 int main(int argc, char **argv)
 {
+	srand((unsigned int)time(NULL));
+
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+	{
+		//Object *m_objects[i] = new Object(rand() % 250, rand() % 250, 0, 10, 0, 0, 0, 0, 1, 1, 1) ;
+		b[i]->x = rand() % 500 - 250;
+		b[i]->y = rand() % 500 - 250;
+	}
+
+	SM.Add(b);
 	// Initialize GL things
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);

@@ -3,6 +3,21 @@
 #include <cstdlib>
 #include "ctime"
 
+Object::Object()
+{
+	x = 0;
+	y = 0;
+	z = 0;
+	size = 10;
+	spd = 1;
+	r = 1;
+	g = 1;
+	b = 1;
+	a = 1;
+	vecx = 1;
+	vecy = -1;
+}
+
 Object::Object(float x1, float y1, float z1, float size1, float r1, float g1, float b1, float a1,float spd1,float vecx1, float vecy1)
 {
 	x = x1;
