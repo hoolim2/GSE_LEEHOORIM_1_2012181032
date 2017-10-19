@@ -15,12 +15,15 @@ but WITHOUT ANY WARRANTY.
 
 #include "Renderer.h"
 #include "Object.h"
+#include <cstdlib>
+#include "ctime"
+
+
+bool mousech = true;
 
 Renderer *g_Renderer = NULL;
-Object a(0,0,0,10,1,1,1,1,5,1,1);
+Object a(0,0,0,10,1,1,1,1,5,0.7,1);
 
-int objnum=0;
-bool mousech = true;
 
 void RenderScene(void)
 {
@@ -47,11 +50,11 @@ void MouseInput(int button, int state, int x, int y)
 	{
 		if (state == GLUT_UP)
 		{
-			a.x = x-250;
-			a.y = -y+250;
+			//a.x = x-250;
+			//a.y = -y+250;
 
-				a.vecx = a.vecx*-1;
-				a.vecy = a.vecy*-1;
+			//a.vecx = a.vecx*-1;
+			//a.vecy = a.vecy*-1;
 
 			if (mousech)
 				mousech = false;
