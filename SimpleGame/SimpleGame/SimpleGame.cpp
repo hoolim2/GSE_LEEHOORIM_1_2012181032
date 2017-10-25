@@ -22,10 +22,10 @@ but WITHOUT ANY WARRANTY.
 #define MAX_OBJECTS_COUNT 50
 
 bool mousech = true;
+bool ch = false;
 
 Renderer *g_Renderer = NULL;
-Object a(0,0,0,10,1,1,1,1,5,0.7,1);
-Object *b[50];
+Object b[MAX_OBJECTS_COUNT];
 SceneMngr SM;
 
 
@@ -35,10 +35,11 @@ void RenderScene(void)
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
 	// Renderer Test
-		g_Renderer->DrawSolidRect(a.x, a.y, a.z, a.size, a.r, a.g, a.b, a.a);
+		//for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+			//g_Renderer->DrawSolidRect(b[i].x, b[i].y, b[i].z, b[i].size, b[i].r, b[i].g, b[i].b, b[i].a);
 		for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-			g_Renderer->DrawSolidRect(b[i]->x, b[i]->y, b[i]->z, b[i]->size, b[i]->r, b[i]->g, b[i]->b, b[i]->a);
-		a.Update();
+			g_Renderer->DrawSolidRect(SM.m_objects[i].x, SM.m_objects[i].y, SM.m_objects[i].z, SM.m_objects[i].size, SM.m_objects[i].r, SM.m_objects[i].g, SM.m_objects[i].b, SM.m_objects[i].a);
+		
 	if(mousech==true)
 		g_Renderer->DrawSolidRect(0,0,0,20,1,1,1,1);
 	
@@ -47,6 +48,14 @@ void RenderScene(void)
 
 void Idle(void)
 {
+	if (ch == true) {
+		for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+		{
+			SM.m_objects[i].Update();
+		}
+		SM.Collide();
+	}
+	
 	RenderScene();
 }
 
@@ -56,12 +65,6 @@ void MouseInput(int button, int state, int x, int y)
 	{
 		if (state == GLUT_UP)
 		{
-			//a.x = x-250;
-			//a.y = -y+250;
-
-			//a.vecx = a.vecx*-1;
-			//a.vecy = a.vecy*-1;
-
 			if (mousech)
 				mousech = false;
 			else if (!mousech)
@@ -83,16 +86,7 @@ void SpecialKeyInput(int key, int x, int y)
 
 int main(int argc, char **argv)
 {
-	srand((unsigned int)time(NULL));
-
-	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-	{
-		//Object *m_objects[i] = new Object(rand() % 250, rand() % 250, 0, 10, 0, 0, 0, 0, 1, 1, 1) ;
-		b[i]->x = rand() % 500 - 250;
-		b[i]->y = rand() % 500 - 250;
-	}
-
-	SM.Add(b);
+	
 	// Initialize GL things
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -100,6 +94,10 @@ int main(int argc, char **argv)
 	glutInitWindowSize(500, 500);
 	glutCreateWindow("Game Software Engineering KPU");
 
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+		SM.Add(b, i);
+
+	ch = true;
 	glewInit();
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{

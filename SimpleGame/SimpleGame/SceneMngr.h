@@ -7,10 +7,9 @@ class SceneMngr
 public:
 	SceneMngr();
 	~SceneMngr();
+	Object m_objects[MAX_OBJECTS_COUNT];
 
-	void Add(Object** a);
-	void Update();
+	void Add(Object a[], int index);
+	void Collide();
 
-	Object *m_objects[MAX_OBJECTS_COUNT];
 };
-

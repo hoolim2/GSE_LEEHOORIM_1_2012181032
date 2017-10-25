@@ -8,7 +8,7 @@ Object::Object()
 	x = 0;
 	y = 0;
 	z = 0;
-	size = 10;
+	size = 20;
 	spd = 1;
 	r = 1;
 	g = 1;
@@ -16,22 +16,9 @@ Object::Object()
 	a = 1;
 	vecx = 1;
 	vecy = -1;
+	colck = false;
 }
 
-Object::Object(float x1, float y1, float z1, float size1, float r1, float g1, float b1, float a1,float spd1,float vecx1, float vecy1)
-{
-	x = x1;
-	y = y1;
-	z = z1;
-	size = size1;
-	spd = spd1;
-	r = r1;
-	g = g1;
-	b = b1;
-	a = a1;
-	vecx = vecx1;
-	vecy = vecy1;
-}
 
 void Object::Update()
 {
@@ -45,6 +32,19 @@ void Object::Update()
 		vecy = -vecy;
 	else if (y< -250)
 		vecy = -vecy;
+
+	if (colck)
+	{
+		r = 1;
+		g = 0;
+		b = 0;
+	}
+	else if(!colck)
+	{
+		r = 1;
+		g = 1;
+		b = 1;
+	}
 }
 
 Object::~Object()
