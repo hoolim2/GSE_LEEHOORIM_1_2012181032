@@ -3,10 +3,11 @@ class Object
 {
 
 public:
-	float x, y, z, size, r, g, b, a,spd,vecx,vecy;
+	float x, y, z, size, r, g, b, a,spd,vecx,vecy,life_time;
+	int life;
 	bool colck;
 	Object();
 	~Object();
-	void Update();
+	void Update(float elapsedTime);
 };
 

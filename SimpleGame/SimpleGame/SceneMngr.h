@@ -9,7 +9,7 @@ public:
 	~SceneMngr();
 	Object m_objects[MAX_OBJECTS_COUNT];
 
-	void Add(Object a[], int index);
+	void Add(Object a[], int index, float x, float y);
 	void Collide();
 
 };

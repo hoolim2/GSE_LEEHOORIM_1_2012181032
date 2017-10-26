@@ -20,16 +20,16 @@ SceneMngr::~SceneMngr()
 {
 }
 
-void SceneMngr::Add(Object a[], int index)
+void SceneMngr::Add(Object a[], int index,float x,float y)
 {
 	m_objects[index] = a[index];
 
 	srand((unsigned int)time(NULL));
 
-	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+	for (int i = 0; i < index; i++)
 	{
-		a[i].x = rand() % 500 - 250;
-		a[i].y = rand() % 500 - 250;
+		a[i].x = x;
+		a[i].y = y;
 		a[i].spd = rand() % 5 + 1;
 		a[i].vecx = rand() % 5-2.5;
 		a[i].vecy = rand() % 5-2.5;
@@ -40,15 +40,24 @@ void SceneMngr::Collide()
 {
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
-		for (int j = i+1; j < MAX_OBJECTS_COUNT; j++)
+		for (int j = 0; j < MAX_OBJECTS_COUNT; j++)
 		{
-			if ((m_objects[i].x - (m_objects[i].size / 2) <= m_objects[j].x + (m_objects[j].size / 2) &&
-				m_objects[i].y - (m_objects[i].size / 2) <= m_objects[j].y + (m_objects[j].size / 2))&&
-				(m_objects[i].x + (m_objects[i].size / 2) >= m_objects[j].x - (m_objects[j].size / 2) &&
-				m_objects[i].y + (m_objects[i].size / 2) >= m_objects[j].y - (m_objects[j].size / 2)))
+			if (m_objects[i].x - (m_objects[i].size / 2) <= m_objects[j].x + (m_objects[j].size / 2))
 			{
-				m_objects[j].colck = true;
-				m_objects[i].colck = true;
+				if (m_objects[i].y - (m_objects[i].size / 2) <= m_objects[j].y + (m_objects[j].size / 2))
+				{
+					if (m_objects[i].x + (m_objects[i].size / 2) >= m_objects[j].x - (m_objects[j].size / 2))
+					{
+						if (m_objects[i].y + (m_objects[i].size / 2) >= m_objects[j].y - (m_objects[j].size / 2))
+						{
+							m_objects[i].colck = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				m_objects[i].colck = false;
 			}
 		}
 	}

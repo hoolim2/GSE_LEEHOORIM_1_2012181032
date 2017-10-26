@@ -18,15 +18,23 @@ but WITHOUT ANY WARRANTY.
 #include <cstdlib>
 #include "ctime"
 #include "SceneMngr.h"
+#include <windows.h>
+#include "Mmsystem.h"
+#pragma comment(lib, "winmm.lib")
 
-#define MAX_OBJECTS_COUNT 50
+
+#define MAX_OBJECTS_COUNT 10
 
 bool mousech = true;
-bool ch = false;
 
 Renderer *g_Renderer = NULL;
+
+DWORD prevTime = 0.0f;
+DWORD currTime = timeGetTime();
 Object b[MAX_OBJECTS_COUNT];
 SceneMngr SM;
+
+DWORD elapsedTime = currTime - prevTime;
 
 
 void RenderScene(void)
@@ -34,27 +42,22 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
-	// Renderer Test
-		//for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-			//g_Renderer->DrawSolidRect(b[i].x, b[i].y, b[i].z, b[i].size, b[i].r, b[i].g, b[i].b, b[i].a);
-		for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-			g_Renderer->DrawSolidRect(SM.m_objects[i].x, SM.m_objects[i].y, SM.m_objects[i].z, SM.m_objects[i].size, SM.m_objects[i].r, SM.m_objects[i].g, SM.m_objects[i].b, SM.m_objects[i].a);
-		
-	if(mousech==true)
-		g_Renderer->DrawSolidRect(0,0,0,20,1,1,1,1);
+	prevTime = currTime;
+
+	// Renderer Test 기본오브젝트
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+		g_Renderer->DrawSolidRect(SM.m_objects[i].x, SM.m_objects[i].y, SM.m_objects[i].z, SM.m_objects[i].size, SM.m_objects[i].r, SM.m_objects[i].g, SM.m_objects[i].b, SM.m_objects[i].a);
 	
 	glutSwapBuffers();
 }
 
 void Idle(void)
 {
-	if (ch == true) {
-		for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 		{
-			SM.m_objects[i].Update();
+			SM.m_objects[i].Update(elapsedTime);
 		}
-		SM.Collide();
-	}
+	SM.Collide();
 	
 	RenderScene();
 }
@@ -65,6 +68,15 @@ void MouseInput(int button, int state, int x, int y)
 	{
 		if (state == GLUT_UP)
 		{
+			float mouseX = x - 250;
+			float mouseY = -y + 250;
+			int i = 0;
+			SM.Add(b, i, mouseX, mouseY);
+			i++;
+
+ 
+
+
 			if (mousech)
 				mousech = false;
 			else if (!mousech)
@@ -94,10 +106,6 @@ int main(int argc, char **argv)
 	glutInitWindowSize(500, 500);
 	glutCreateWindow("Game Software Engineering KPU");
 
-	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-		SM.Add(b, i);
-
-	ch = true;
 	glewInit();
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{
@@ -120,6 +128,9 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
+
+
+	prevTime = currTime;
 
 	glutMainLoop();
 

@@ -1,2 +1,9 @@
-﻿  SimpleGame.vcxproj -> C:\2dGP\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.exe
-  SimpleGame.vcxproj -> C:\2dGP\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.pdb (Partial PDB)
+﻿  SimpleGame.cpp
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(26): warning C4005: 'MAX_OBJECTS_COUNT': 매크로 재정의
+  c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\scenemngr.h(3): note: 'MAX_OBJECTS_COUNT'의 이전 정의를 참조하십시오.
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(32): warning C4244: '초기화 중': 'float'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(58): warning C4244: '인수': 'DWORD'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(71): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(72): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  SimpleGame.vcxproj -> C:\GSE_3-2lee\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.exe
+  SimpleGame.vcxproj -> C:\GSE_3-2lee\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.pdb (Partial PDB)

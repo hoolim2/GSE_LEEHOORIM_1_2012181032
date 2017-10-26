@@ -2,6 +2,9 @@
 #include "Object.h"
 #include <cstdlib>
 #include "ctime"
+#include "iostream"
+
+using namespace std;
 
 Object::Object()
 {
@@ -17,10 +20,12 @@ Object::Object()
 	vecx = 1;
 	vecy = -1;
 	colck = false;
+	life = 10;
+	life_time = 6000;
 }
 
 
-void Object::Update()
+void Object::Update(float elapsedTime)
 {
 	x = x + spd*vecx;
 	if (x >= 250)
@@ -38,12 +43,21 @@ void Object::Update()
 		r = 1;
 		g = 0;
 		b = 0;
+		life--;
 	}
 	else if(!colck)
 	{
 		r = 1;
 		g = 1;
 		b = 1;
+	}
+	if (life == 0)
+	{
+		cout << "is dead" << endl;
+	}
+	if(life_time ==0)
+	{
+		cout << "is dead" << endl;
 	}
 }
 
