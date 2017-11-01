@@ -6,7 +6,7 @@ public:
 	float x, y, z, size, r, g, b, a,spd,vecx,vecy,life_time;
 	int life;
 	bool colck;
-	Object();
+	Object(float x, float y);
 	~Object();
 	void Update(float elapsedTime);
 };

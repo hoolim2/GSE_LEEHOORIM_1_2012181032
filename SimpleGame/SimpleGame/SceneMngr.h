@@ -1,15 +1,25 @@
 #pragma once
+#include "Renderer.h"
 #include "Object.h"
+
 #define MAX_OBJECTS_COUNT 50
 
 class SceneMngr
 {
 public:
-	SceneMngr();
+	SceneMngr(int width, int height);
 	~SceneMngr();
-	Object m_objects[MAX_OBJECTS_COUNT];
+	
+	Object *m_objects[MAX_OBJECTS_COUNT];
 
-	void Add(Object a[], int index, float x, float y);
+	Renderer *m_renderer;
+
+	int Add(float x, float y);
+	void DrawObj();
 	void Collide();
+	void Update(float elapsedTime);
 
+private:
+	int m_windowWidth;
+	int m_windowHeight;
 };

@@ -6,10 +6,10 @@
 
 using namespace std;
 
-Object::Object()
+Object::Object(float mouse_x, float mouse_y)
 {
-	x = 0;
-	y = 0;
+	x = mouse_x;
+	y = mouse_y;
 	z = 0;
 	size = 20;
 	spd = 1;
@@ -17,8 +17,8 @@ Object::Object()
 	g = 1;
 	b = 1;
 	a = 1;
-	vecx = 1;
-	vecy = -1;
+	vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
+	vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 	colck = false;
 	life = 10;
 	life_time = 6000;
@@ -27,12 +27,16 @@ Object::Object()
 
 void Object::Update(float elapsedTime)
 {
-	x = x + spd*vecx;
+	float elapsedTimeSecond = elapsedTime / 1000.f;
+	x = x + (spd*vecx)*elapsedTimeSecond;
+	y = y + (spd*vecy)*elapsedTimeSecond;
+
+
 	if (x >= 250)
 		vecx = -vecx;
 	else if (x< -250)
 		vecx = -vecx;
-	y = y + spd*vecy;
+
 	if (y >= 250)
 		vecy = -vecy;
 	else if (y< -250)

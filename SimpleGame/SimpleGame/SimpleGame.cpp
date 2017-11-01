@@ -22,19 +22,13 @@ but WITHOUT ANY WARRANTY.
 #include "Mmsystem.h"
 #pragma comment(lib, "winmm.lib")
 
+bool mousech = false;
 
-#define MAX_OBJECTS_COUNT 10
-
-bool mousech = true;
-
-Renderer *g_Renderer = NULL;
+SceneMngr *g_SceneMngr = NULL;
 
 DWORD prevTime = 0.0f;
-DWORD currTime = timeGetTime();
-Object b[MAX_OBJECTS_COUNT];
-SceneMngr SM;
 
-DWORD elapsedTime = currTime - prevTime;
+
 
 
 void RenderScene(void)
@@ -42,45 +36,43 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
+	DWORD currTime = timeGetTime();
+	DWORD elapsedTime = currTime - prevTime;
 	prevTime = currTime;
 
+	g_SceneMngr->Update((float)elapsedTime);
+	g_SceneMngr->DrawObj();
+	
+
 	// Renderer Test 기본오브젝트
-	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-		g_Renderer->DrawSolidRect(SM.m_objects[i].x, SM.m_objects[i].y, SM.m_objects[i].z, SM.m_objects[i].size, SM.m_objects[i].r, SM.m_objects[i].g, SM.m_objects[i].b, SM.m_objects[i].a);
 	
 	glutSwapBuffers();
 }
 
 void Idle(void)
 {
-	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
-		{
-			SM.m_objects[i].Update(elapsedTime);
-		}
-	SM.Collide();
-	
 	RenderScene();
 }
 
-void MouseInput(int button, int state, int x, int y)
+void MouseInput(int button, int state, int x,int y)
 {
+	if (button == GLUT_LEFT_BUTTON)
+	{
+		if (state == GLUT_DOWN)
+		{
+			mousech = true;
+		}
+	}
 	if (button == GLUT_LEFT_BUTTON)
 	{
 		if (state == GLUT_UP)
 		{
-			float mouseX = x - 250;
-			float mouseY = -y + 250;
-			int i = 0;
-			SM.Add(b, i, mouseX, mouseY);
-			i++;
-
- 
-
-
 			if (mousech)
-				mousech = false;
-			else if (!mousech)
-				mousech = true;
+			{
+				for (int i = 0; i < 1; i++)
+					g_SceneMngr->Add(x - 250, -y + 250);
+			}
+			mousech = false;
 		}
 	}
 	RenderScene();
@@ -117,11 +109,7 @@ int main(int argc, char **argv)
 	}
 
 	// Initialize Renderer
-	g_Renderer = new Renderer(500, 500);
-	if (!g_Renderer->IsInitialized())
-	{
-		std::cout << "Renderer could not be initialized.. \n";
-	}
+	g_SceneMngr = new SceneMngr(500, 500);
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
@@ -130,11 +118,11 @@ int main(int argc, char **argv)
 	glutSpecialFunc(SpecialKeyInput);
 
 
-	prevTime = currTime;
+	prevTime = timeGetTime();
 
 	glutMainLoop();
 
-	delete g_Renderer;
+	delete g_SceneMngr;
 
     return 0;
 }
