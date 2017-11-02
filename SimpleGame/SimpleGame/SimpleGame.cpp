@@ -41,7 +41,7 @@ void RenderScene(void)
 	prevTime = currTime;
 
 	g_SceneMngr->Update((float)elapsedTime);
-	g_SceneMngr->DrawObj();
+	g_SceneMngr->DrawAllObj();
 	
 
 	// Renderer Test 기본오브젝트
@@ -51,6 +51,8 @@ void RenderScene(void)
 
 void Idle(void)
 {
+	g_SceneMngr->AddBuildingObj(1);
+	g_SceneMngr->AddBulletObj();
 	RenderScene();
 }
 
@@ -70,7 +72,7 @@ void MouseInput(int button, int state, int x,int y)
 			if (mousech)
 			{
 				for (int i = 0; i < 1; i++)
-					g_SceneMngr->Add(x - 250, -y + 250);
+					g_SceneMngr->AddCommonObj(x - 250, -y + 250);
 			}
 			mousech = false;
 		}
