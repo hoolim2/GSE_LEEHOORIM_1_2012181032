@@ -22,13 +22,16 @@ but WITHOUT ANY WARRANTY.
 #include "Mmsystem.h"
 #pragma comment(lib, "winmm.lib")
 
+using namespace std;
+
+float shootBullet = 0;
 bool mousech = false;
 
 SceneMngr *g_SceneMngr = NULL;
 
 DWORD prevTime = 0.0f;
 
-
+void makeMap();
 
 
 void RenderScene(void)
@@ -39,9 +42,20 @@ void RenderScene(void)
 	DWORD currTime = timeGetTime();
 	DWORD elapsedTime = currTime - prevTime;
 	prevTime = currTime;
+	float bulletTimer = (float)elapsedTime;
+	shootBullet = shootBullet + bulletTimer;
+
 
 	g_SceneMngr->Update((float)elapsedTime);
 	g_SceneMngr->DrawAllObj();
+
+	if (shootBullet >= 500)
+	{
+		g_SceneMngr->AddBulletObj();
+		shootBullet = 0;
+	}
+
+	
 	
 
 	// Renderer Test 기본오브젝트
@@ -51,8 +65,6 @@ void RenderScene(void)
 
 void Idle(void)
 {
-	g_SceneMngr->AddBuildingObj(1);
-	g_SceneMngr->AddBulletObj();
 	RenderScene();
 }
 
@@ -122,10 +134,17 @@ int main(int argc, char **argv)
 
 	prevTime = timeGetTime();
 
+	makeMap();
+
 	glutMainLoop();
 
 	delete g_SceneMngr;
 
     return 0;
+}
+
+void makeMap()
+{
+	g_SceneMngr->AddBuildingObj(1);
 }
 

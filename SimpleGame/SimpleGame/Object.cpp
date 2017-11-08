@@ -8,7 +8,8 @@ using namespace std;
 
 Object::Object(float objx, float objy,int def)
 {
-	if (def == 0) {
+	//Character
+	if (def == 1) {
 		x = objx;
 		y = objy;
 		z = 0;
@@ -21,13 +22,11 @@ Object::Object(float objx, float objy,int def)
 		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
-		colck = false;
-		life = 10;
+		life = 50;
 		life_time = 6000;
-		shootbullet = false;
-		bulletTime = 0;
 	}
-	else if (def == 1)
+	//Building
+	else if (def == 2)
 	{
 		x = 0;
 		y = 0;
@@ -41,12 +40,11 @@ Object::Object(float objx, float objy,int def)
 		vecx = 0;
 		vecy = 0;
 		type = def;
-		colck = false;
 		life = 500;
-		shootbullet = false;
 		bulletTime = 0;
 	}
-	else if (def == 2)
+	//Bullet
+	else if (def == 3)
 	{
 		x = 0;
 		y = 0;
@@ -60,10 +58,7 @@ Object::Object(float objx, float objy,int def)
 		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
-		colck = false;
-		life = 500;
-		shootbullet = false;
-		bulletTime = 0;
+		life = 10;
 	}
 }
 
@@ -73,7 +68,6 @@ void Object::Update(float elapsedTime)
 	float elapsedTimeSecond = elapsedTime / 1000.f;
 	x = x + (spd*vecx)*elapsedTimeSecond;
 	y = y + (spd*vecy)*elapsedTimeSecond;
-
 	if (x >= 250)
 		vecx = -vecx;
 	else if (x< -250)
@@ -84,7 +78,7 @@ void Object::Update(float elapsedTime)
 	else if (y< -250)
 		vecy = -vecy;
 
-	if (life == 0)
+	if (life <= 0)
 	{
 		cout << "is dead" << endl;
 	}

@@ -81,7 +81,6 @@ int SceneMngr::AddBuildingObj(int index)
 			return i;
 		}
 	}
-
 	return -1;
 }
 
@@ -98,19 +97,6 @@ int SceneMngr::AddBulletObj()
 	return -1;
 }
 
-void SceneMngr::DeleteObj(int index)
-{
-	for (int i = 0; i < index; i++)
-	{
-		if (m_objects[i] == NULL)
-		{
-			delete m_objects[index];
-			m_objects[index] = NULL;
-		}
-	}
-
-}
-
 void SceneMngr::CollideCheck()
 {
 	int collisionCount = 0;
@@ -122,26 +108,30 @@ void SceneMngr::CollideCheck()
 		{
 			for (int j = 0; j < MAX_OBJECTS_COUNT; j++)
 			{
+				int enemylife = 0;
 				if (i == j)
 					continue;
 
 				if (m_objects[j] != NULL)
 				{
-					if (!(m_objects[i]->type * m_objects[i]->type == 2))
+					if (!(m_objects[i]->type == m_objects[j]->type))
 					{
-						float left, top, right, bottom, left1, top1, right1, bottom1;
-
-						left = m_objects[i]->x - m_objects[i]->size / 2.0f;
-						bottom = m_objects[i]->y - m_objects[i]->size / 2.0f;
-						right = m_objects[i]->x + m_objects[i]->size / 2.0f;
-						top = m_objects[i]->y + m_objects[i]->size / 2.0f;
-						left1 = m_objects[j]->x - m_objects[j]->size / 2.0f;
-						bottom1 = m_objects[j]->y - m_objects[j]->size / 2.0f;
-						right1 = m_objects[j]->x + m_objects[j]->size / 2.0f;
-						top1 = m_objects[j]->y + m_objects[j]->size / 2.0f;
-						if (BoxCollisionTest(left, bottom, right, top, left1, bottom1, right1, top1))
+						if (!(m_objects[i]->type * m_objects[j]->type == 6))
 						{
-							collisionCount++;
+							float left, top, right, bottom, left1, top1, right1, bottom1;
+
+							left = m_objects[i]->x - m_objects[i]->size / 2.0f;
+							bottom = m_objects[i]->y - m_objects[i]->size / 2.0f;
+							right = m_objects[i]->x + m_objects[i]->size / 2.0f;
+							top = m_objects[i]->y + m_objects[i]->size / 2.0f;
+							left1 = m_objects[j]->x - m_objects[j]->size / 2.0f;
+							bottom1 = m_objects[j]->y - m_objects[j]->size / 2.0f;
+							right1 = m_objects[j]->x + m_objects[j]->size / 2.0f;
+							top1 = m_objects[j]->y + m_objects[j]->size / 2.0f;
+							if (BoxCollisionTest(left, bottom, right, top, left1, bottom1, right1, top1))
+							{
+								collisionCount++;
+							}
 						}
 					}
 				}
@@ -152,17 +142,18 @@ void SceneMngr::CollideCheck()
 				m_objects[i]->g = 0;
 				m_objects[i]->b = 0;
 				m_objects[i]->a = 1;
+				m_objects[i]->life -= 10;
 			}
 			else
 			{
-				if (m_objects[i]->type == 0)
+				if (m_objects[i]->type == 1)
 				{
 					m_objects[i]->r = 1;
 					m_objects[i]->g = 1;
 					m_objects[i]->b = 1;
 					m_objects[i]->a = 1;
 				}
-				else if (m_objects[i]->type == 1)
+				else if (m_objects[i]->type == 2)
 				{
 					m_objects[i]->r = 1;
 					m_objects[i]->g = 1;
@@ -171,6 +162,7 @@ void SceneMngr::CollideCheck()
 				}
 			}
 		}
+		DeleteObj();
 	}
 }
 
@@ -192,8 +184,8 @@ bool SceneMngr::BoxCollisionTest(float minX, float minY, float maxX, float maxY,
 
 void SceneMngr::Update(float elapsedTime)
 {
-	CollideCheck();
 
+	CollideCheck();
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
 		if (m_objects[i] != NULL)
@@ -202,3 +194,19 @@ void SceneMngr::Update(float elapsedTime)
 		}
 	}
 }
+
+void SceneMngr::DeleteObj()
+{
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+	{
+		if (m_objects[i] != NULL)
+		{
+			if (m_objects[i]->life <= 0)
+			{
+				delete m_objects[i];
+				m_objects[i] = NULL;
+			}
+		}
+	}
+}
+
