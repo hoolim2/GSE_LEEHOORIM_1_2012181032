@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Object::Object(float objx, float objy,int def)
+Object::Object(float objx, float objy,int teamNum,int def)
 {
 	//Character
 	if (def == 1) {
@@ -22,7 +22,9 @@ Object::Object(float objx, float objy,int def)
 		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
-		life = 50;
+		arrowCoolTime = 0;
+		team = teamNum;
+		life = 10;
 		life_time = 6000;
 	}
 	//Building
@@ -40,8 +42,9 @@ Object::Object(float objx, float objy,int def)
 		vecx = 0;
 		vecy = 0;
 		type = def;
+		team = teamNum;
 		life = 500;
-		bulletTime = 0;
+		bulletCoolTime = 0;
 	}
 	//Bullet
 	else if (def == 3)
@@ -58,6 +61,25 @@ Object::Object(float objx, float objy,int def)
 		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
+		team = teamNum;
+		life = 10;
+	}
+	//Arrow
+	else if (def == 4)
+	{
+		x = objx;
+		y = objy;
+		z = 0;
+		size = 5;
+		spd = 5;
+		r = 0;
+		g = 1;
+		b = 0;
+		a = 1;
+		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		type = def;
+		team = teamNum;
 		life = 10;
 	}
 }
@@ -68,6 +90,15 @@ void Object::Update(float elapsedTime)
 	float elapsedTimeSecond = elapsedTime / 1000.f;
 	x = x + (spd*vecx)*elapsedTimeSecond;
 	y = y + (spd*vecy)*elapsedTimeSecond;
+
+	if (type == 1) {
+		arrowCoolTime += elapsedTime;
+	}
+	else if (type == 2) {
+		bulletCoolTime += elapsedTime;
+	}
+
+
 	if (x >= 250)
 		vecx = -vecx;
 	else if (x< -250)

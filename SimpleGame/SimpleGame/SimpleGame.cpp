@@ -23,8 +23,6 @@ but WITHOUT ANY WARRANTY.
 #pragma comment(lib, "winmm.lib")
 
 using namespace std;
-
-float shootBullet = 0;
 bool mousech = false;
 
 SceneMngr *g_SceneMngr = NULL;
@@ -42,22 +40,15 @@ void RenderScene(void)
 	DWORD currTime = timeGetTime();
 	DWORD elapsedTime = currTime - prevTime;
 	prevTime = currTime;
-	float bulletTimer = (float)elapsedTime;
-	shootBullet = shootBullet + bulletTimer;
-
 
 	g_SceneMngr->Update((float)elapsedTime);
 	g_SceneMngr->DrawAllObj();
 
-	if (shootBullet >= 500)
-	{
-		g_SceneMngr->AddBulletObj();
-		shootBullet = 0;
-	}
-
+	for (int i = 0; i <MAX_OBJECTS_COUNT; i++)
+		g_SceneMngr->AddBulletObj(i);
+	for(int i =0; i <MAX_OBJECTS_COUNT ; i++)
+		g_SceneMngr->AddArrowObj(i);
 	
-	
-
 	// Renderer Test 기본오브젝트
 	
 	glutSwapBuffers();

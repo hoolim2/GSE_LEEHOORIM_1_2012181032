@@ -16,11 +16,12 @@ public:
 	Object *m_objects[MAX_OBJECTS_COUNT];
 
 	Renderer *m_renderer;
+	Renderer *B_renderer;
 
 	int AddCommonObj(float x, float y);
-	int AddBulletObj();
+	int AddBulletObj(int index);
 	int AddBuildingObj(int index);
-	void DeleteObj(int index);
+	int AddArrowObj(int index);
 	void DrawAllObj();
 	void CollideCheck();
 	void DeleteObj();
@@ -31,4 +32,5 @@ public:
 private:
 	int m_windowWidth;
 	int m_windowHeight;
+	int B_texBuilding;
 };
