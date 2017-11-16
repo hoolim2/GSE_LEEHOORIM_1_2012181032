@@ -10,30 +10,44 @@ Object::Object(float objx, float objy,int teamNum,int def)
 {
 	//Character
 	if (def == 1) {
-		x = objx;
-		y = objy;
-		z = 0;
+		if (teamNum == 1)
+		{
+			x = objx;
+			y = objy;
+			z = 0;
+			r = 1;
+			g = 0;
+			b = 0;
+			a = 1;
+		}
+		else if (teamNum == 2)
+		{
+			x = objx;
+			y = objy;
+			z = 0;
+			r = 0;
+			g = 0;
+			b = 1;
+			a = 1;
+		}
 		size = 20;
-		spd = 1;
-		r = 1;
-		g = 1;
-		b = 1;
-		a = 1;
-		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
-		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		spd = 100;
+		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
-		arrowCoolTime = 0;
+		bulletCoolTime = 0;
 		team = teamNum;
 		life = 10;
 		life_time = 6000;
+		attacked = false;
 	}
 	//Building
 	else if (def == 2)
 	{
-		x = 0;
-		y = 0;
+		x = objx;
+		y = objy;
 		z = 0;
-		size = 50;
+		size = 100;
 		spd = 0;
 		r = 1;
 		g = 1;
@@ -44,25 +58,37 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		type = def;
 		team = teamNum;
 		life = 500;
-		bulletCoolTime = 0;
+		arrowCoolTime = 0;
+		attacked = false;
 	}
 	//Bullet
 	else if (def == 3)
 	{
-		x = 0;
-		y = 0;
+		x = objx;
+		y = objy;
 		z = 0;
 		size = 5;
-		spd = 5;
-		r = 1;
-		g = 0;
-		b = 0;
-		a = 1;
-		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
-		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		if (teamNum == 1)
+		{
+			r = 1;
+			g = 0;
+			b = 0;
+			a = 1;
+		}
+		else if (teamNum == 2)
+		{
+			r = 0;
+			g = 0;
+			b = 1;
+			a = 1;
+		}
+		spd = 500;
+		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
 		team = teamNum;
 		life = 10;
+		attacked = false;
 	}
 	//Arrow
 	else if (def == 4)
@@ -71,16 +97,27 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		y = objy;
 		z = 0;
 		size = 5;
-		spd = 5;
-		r = 0;
-		g = 1;
-		b = 0;
-		a = 1;
-		vecx = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
-		vecy = 200.f *(((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		if (teamNum == 1)
+		{
+			r = 0.5;
+			g = 0.2;
+			b = 0.7;
+			a = 1;
+		}
+		else if (teamNum == 2)
+		{
+			r = 1;
+			g = 1;
+			b = 0;
+			a = 1;
+		}
+		spd = 500;
+		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
 		team = teamNum;
 		life = 10;
+		attacked = false;
 	}
 }
 
@@ -90,23 +127,28 @@ void Object::Update(float elapsedTime)
 	float elapsedTimeSecond = elapsedTime / 1000.f;
 	x = x + (spd*vecx)*elapsedTimeSecond;
 	y = y + (spd*vecy)*elapsedTimeSecond;
-
-	if (type == 1) {
-		arrowCoolTime += elapsedTime;
-	}
-	else if (type == 2) {
+	if (type == 1)
+	{
 		bulletCoolTime += elapsedTime;
 	}
-
+	else if (type == 2)
+	{
+		arrowCoolTime += elapsedTime;
+	}
+	if (attacked)
+	{
+		life -= 10;
+		attacked = false;
+	}
 
 	if (x >= 250)
 		vecx = -vecx;
 	else if (x< -250)
 		vecx = -vecx;
 
-	if (y >= 250)
+	if (y >= 400)
 		vecy = -vecy;
-	else if (y< -250)
+	else if (y< -400)
 		vecy = -vecy;
 
 	if (life <= 0)

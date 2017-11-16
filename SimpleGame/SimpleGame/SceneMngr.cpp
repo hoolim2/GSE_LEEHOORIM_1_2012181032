@@ -14,7 +14,8 @@ SceneMngr::SceneMngr(int width,int height)
 {
 	m_renderer = new Renderer(width, height);
 	B_renderer = new Renderer(width, height);
-	B_texBuilding = B_renderer->CreatePngTexture("./Resource/megaman.png");
+	B_texBuilding[0] = B_renderer->CreatePngTexture("./Resource/megaman.png");
+	B_texBuilding[1] = B_renderer->CreatePngTexture("./Resource/forte.png");
 
 	if (!m_renderer->IsInitialized())
 	{
@@ -46,15 +47,30 @@ void SceneMngr::DrawAllObj()
 			// Renderer Test
 			if (m_objects[i]->type == 2)
 			{
-				B_renderer->DrawTexturedRect(m_objects[i]->x,
-					m_objects[i]->y,
-					0,
-					m_objects[i]->size,
-					m_objects[i]->r,
-					m_objects[i]->g,
-					m_objects[i]->b,
-					m_objects[i]->a,
-					B_texBuilding);
+				if (m_objects[i]->team == 1)
+				{
+					B_renderer->DrawTexturedRect(m_objects[i]->x,
+						m_objects[i]->y,
+						0,
+						m_objects[i]->size,
+						m_objects[i]->r,
+						m_objects[i]->g,
+						m_objects[i]->b,
+						m_objects[i]->a,
+						B_texBuilding[0]);
+				}
+				if (m_objects[i]->team == 2)
+				{
+					B_renderer->DrawTexturedRect(m_objects[i]->x,
+						m_objects[i]->y,
+						0,
+						m_objects[i]->size,
+						m_objects[i]->r,
+						m_objects[i]->g,
+						m_objects[i]->b,
+						m_objects[i]->a,
+						B_texBuilding[1]);
+				}
 			}
 			else {
 				m_renderer->DrawSolidRect(
@@ -72,26 +88,26 @@ void SceneMngr::DrawAllObj()
 	}
 }
 
-int SceneMngr::AddCommonObj(float x, float y)
+int SceneMngr::AddCommonObj(float x, float y,int team)
 {
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
 		if (m_objects[i] == NULL)
 		{
-			m_objects[i] = new Object(x, y, i, OBJECT_CHARACTER);
+			m_objects[i] = new Object(x, y, team, OBJECT_CHARACTER);
 			return i;
 		}
 	}
 	return -1;
 }
 
-int SceneMngr::AddBuildingObj(int index)
+int SceneMngr::AddBuildingObj(int index,int team,int x,int y)
 {
 	for (int i = 0; i < index; i++)
 	{
 		if (m_objects[i] == NULL)
 		{
-			m_objects[i]= new Object(0, 0,i, OBJECT_BUILDING);
+			m_objects[i]= new Object(x, y, team, OBJECT_BUILDING);
 			return i;
 		}
 	}
@@ -102,13 +118,13 @@ int SceneMngr::AddBulletObj(int index)
 {
 	if (!m_objects[index] == NULL)
 	{
-		if (m_objects[index]->type == 2 && m_objects[index]->bulletCoolTime >= 500)
+		if (m_objects[index]->type == 1 && m_objects[index]->bulletCoolTime >= 3000)
 		{
 			for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 			{
 				if (m_objects[i] == NULL)
 				{
-					m_objects[i] = new Object(m_objects[index]->x, m_objects[index]->y, index, OBJECT_BULLET);
+					m_objects[i] = new Object(m_objects[index]->x, m_objects[index]->y, m_objects[index]->team, OBJECT_BULLET);
 					m_objects[index]->bulletCoolTime = 0;
 					return i;
 				}
@@ -122,13 +138,13 @@ int SceneMngr::AddArrowObj(int index)
 {
 	if (!m_objects[index] == NULL)
 	{
-		if (m_objects[index]->type == 1 && m_objects[index]->arrowCoolTime >= 500)
+		if (m_objects[index]->type == 2 && m_objects[index]->arrowCoolTime >= 10000)
 		{
 			for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 			{
 				if (m_objects[i] == NULL)
 				{
-					m_objects[i] = new Object(m_objects[index]->x, m_objects[index]->y, index,OBJECT_ARROW);
+					m_objects[i] = new Object(m_objects[index]->x, m_objects[index]->y, m_objects[index]->team,OBJECT_ARROW);
 					m_objects[index]->arrowCoolTime = 0;
 					return i;
 				}
@@ -155,9 +171,7 @@ void SceneMngr::CollideCheck()
 
 				if (m_objects[j] != NULL)
 				{
-					if (!((m_objects[i]->type == m_objects[j]->type||
-						m_objects[i]->team == m_objects[j]->team ||
-						m_objects[i]->type * m_objects[j]->type == 6)))
+					if (!(m_objects[i]->team == m_objects[j]->team))
 					{
 						float left, top, right, bottom, left1, top1, right1, bottom1;
 
@@ -173,36 +187,66 @@ void SceneMngr::CollideCheck()
 						{
 							collisionCount++;
 						}
-
 					}
 				}
 			}
 			if (collisionCount > 0)
 			{
-				m_objects[i]->r = 1;
-				m_objects[i]->g = 0;
-				m_objects[i]->b = 0;
-				m_objects[i]->a = 1;
-				m_objects[i]->life -= 10;
+				m_objects[i]->attacked=true;
 				DeleteObj();
 			}
 			else
 			{
 				if (m_objects[i]->type == 1)
 				{
-					m_objects[i]->r = 1;
-					m_objects[i]->g = 1;
-					m_objects[i]->b = 1;
-					m_objects[i]->a = 1;
-					DeleteObj();
+					if (m_objects[i]->team == 1)
+					{
+						m_objects[i]->r = 1;
+						m_objects[i]->g = 0;
+						m_objects[i]->b = 0;
+						m_objects[i]->a = 1;
+					}
+					else if (m_objects[i]->team == 2)
+					{
+						m_objects[i]->r = 0;
+						m_objects[i]->g = 0;
+						m_objects[i]->b = 1;
+						m_objects[i]->a = 1;
+					}
+				}
+				else if (m_objects[i]->type == 3)
+				{
+					if (m_objects[i]->team == 1)
+					{
+						m_objects[i]->r = 1;
+						m_objects[i]->g = 0;
+						m_objects[i]->b = 0;
+						m_objects[i]->a = 1;
+					}
+					else if (m_objects[i]->team == 2)
+					{
+						m_objects[i]->r = 0;
+						m_objects[i]->g = 0;
+						m_objects[i]->b = 1;
+						m_objects[i]->a = 1;
+					}
 				}
 				else if (m_objects[i]->type == 4)
 				{
-					m_objects[i]->r = 0;
-					m_objects[i]->g = 1;
-					m_objects[i]->b = 0;
-					m_objects[i]->a = 1;
-					DeleteObj();
+					if (m_objects[i]->team == 1)
+					{
+						m_objects[i]->r = 0.5;
+						m_objects[i]->g = 0.2;
+						m_objects[i]->b = 0.7;
+						m_objects[i]->a = 1;
+					}
+					else if (m_objects[i]->team == 2)
+					{
+						m_objects[i]->r = 1;
+						m_objects[i]->g = 1;
+						m_objects[i]->b = 0;
+						m_objects[i]->a = 1;
+					}
 				}
 			}
 		}

@@ -18,9 +18,9 @@ public:
 	Renderer *m_renderer;
 	Renderer *B_renderer;
 
-	int AddCommonObj(float x, float y);
+	int AddCommonObj(float x, float y, int team);
 	int AddBulletObj(int index);
-	int AddBuildingObj(int index);
+	int AddBuildingObj(int index , int team, int x, int y);
 	int AddArrowObj(int index);
 	void DrawAllObj();
 	void CollideCheck();
@@ -32,5 +32,5 @@ public:
 private:
 	int m_windowWidth;
 	int m_windowHeight;
-	int B_texBuilding;
+	int B_texBuilding[1];
 };

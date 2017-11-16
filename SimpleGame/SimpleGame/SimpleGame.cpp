@@ -23,7 +23,11 @@ but WITHOUT ANY WARRANTY.
 #pragma comment(lib, "winmm.lib")
 
 using namespace std;
-bool mousech = false;
+bool left_mouse = false;
+bool right_mouse = false;
+bool makeAllow = false;
+float enemyCoolTime=0.f;
+float allowCoolTime = 0.f;
 
 SceneMngr *g_SceneMngr = NULL;
 
@@ -35,11 +39,15 @@ void makeMap();
 void RenderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	DWORD currTime = timeGetTime();
 	DWORD elapsedTime = currTime - prevTime;
 	prevTime = currTime;
+
+	enemyCoolTime += elapsedTime;
+	if (!makeAllow)
+		allowCoolTime += elapsedTime;
 
 	g_SceneMngr->Update((float)elapsedTime);
 	g_SceneMngr->DrawAllObj();
@@ -48,6 +56,17 @@ void RenderScene(void)
 		g_SceneMngr->AddBulletObj(i);
 	for(int i =0; i <MAX_OBJECTS_COUNT ; i++)
 		g_SceneMngr->AddArrowObj(i);
+
+	if (enemyCoolTime >= 5000)
+	{
+		for (int i = 0; i < 1; i++)
+			g_SceneMngr->AddCommonObj((float)(std::rand() % 500)-250, (float)(std::rand() % 200) + 190, 1);
+		enemyCoolTime = 0;
+	}
+	if (allowCoolTime >= 7000)
+	{
+		makeAllow = true;
+	}
 	
 	// Renderer Test 기본오브젝트
 	
@@ -65,19 +84,36 @@ void MouseInput(int button, int state, int x,int y)
 	{
 		if (state == GLUT_DOWN)
 		{
-			mousech = true;
+			left_mouse = true;
 		}
 	}
 	if (button == GLUT_LEFT_BUTTON)
 	{
 		if (state == GLUT_UP)
 		{
-			if (mousech)
+			left_mouse = false;
+		}
+	}
+	if (button == GLUT_RIGHT_BUTTON)
+	{
+		if (state == GLUT_DOWN)
+		{
+			right_mouse = true;
+		}
+	}
+	if (button == GLUT_RIGHT_BUTTON)
+	{
+		if (state == GLUT_UP)
+		{
+			if (right_mouse&&makeAllow)
 			{
 				for (int i = 0; i < 1; i++)
-					g_SceneMngr->AddCommonObj(x - 250, -y + 250);
+					if((-y + 400)<0)
+					g_SceneMngr->AddCommonObj(x-250 , -y + 400 , 2);
+				allowCoolTime = 0;
+				makeAllow = false;
+				right_mouse = false;
 			}
-			mousech = false;
 		}
 	}
 	RenderScene();
@@ -100,7 +136,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(500, 800);
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
@@ -114,7 +150,7 @@ int main(int argc, char **argv)
 	}
 
 	// Initialize Renderer
-	g_SceneMngr = new SceneMngr(500, 500);
+	g_SceneMngr = new SceneMngr(500, 800);
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
@@ -136,6 +172,10 @@ int main(int argc, char **argv)
 
 void makeMap()
 {
-	g_SceneMngr->AddBuildingObj(1);
+	g_SceneMngr->AddBuildingObj(1,1,-200,320);
+	g_SceneMngr->AddBuildingObj(2, 1,200,320);
+	g_SceneMngr->AddBuildingObj(3,1, 0,320);
+	g_SceneMngr->AddBuildingObj(4, 2, -200, -320);
+	g_SceneMngr->AddBuildingObj(5, 2, 200, -320);
+	g_SceneMngr->AddBuildingObj(6, 2, 0, -320);
 }
-
