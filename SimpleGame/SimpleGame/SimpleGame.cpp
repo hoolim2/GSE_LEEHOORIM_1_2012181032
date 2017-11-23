@@ -51,19 +51,20 @@ void RenderScene(void)
 
 	g_SceneMngr->Update((float)elapsedTime);
 	g_SceneMngr->DrawAllObj();
+	g_SceneMngr->DeleteObj();
 
 	for (int i = 0; i <MAX_OBJECTS_COUNT; i++)
 		g_SceneMngr->AddBulletObj(i);
 	for(int i =0; i <MAX_OBJECTS_COUNT ; i++)
 		g_SceneMngr->AddArrowObj(i);
 
-	if (enemyCoolTime >= 5000)
+	if (enemyCoolTime >= 2000)
 	{
 		for (int i = 0; i < 1; i++)
 			g_SceneMngr->AddCommonObj((float)(std::rand() % 500)-250, (float)(std::rand() % 200) + 190, 1);
 		enemyCoolTime = 0;
 	}
-	if (allowCoolTime >= 7000)
+	if (allowCoolTime >= 200)
 	{
 		makeAllow = true;
 	}

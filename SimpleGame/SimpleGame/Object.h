@@ -4,7 +4,7 @@ class Object
 
 public:
 	float x, y, z, size, r, g, b, a,spd,vecx,vecy,life_time, arrowCoolTime;
-	int life, type, bulletCoolTime, team;
+	int life, maxLife, type, bulletCoolTime, team;
 	bool attacked;
 	Object(float x, float y, int teamNum, int def);
 	~Object();

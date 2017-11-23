@@ -9,15 +9,15 @@ using namespace std;
 Object::Object(float objx, float objy,int teamNum,int def)
 {
 	//Character
-	if (def == 1) {
+	if (def == OBJECT_CHARACTER) {
 		if (teamNum == 1)
 		{
 			x = objx;
 			y = objy;
 			z = 0;
 			r = 1;
-			g = 0;
-			b = 0;
+			g = 1;
+			b = 1;
 			a = 1;
 		}
 		else if (teamNum == 2)
@@ -25,8 +25,8 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			x = objx;
 			y = objy;
 			z = 0;
-			r = 0;
-			g = 0;
+			r = 1;
+			g = 1;
 			b = 1;
 			a = 1;
 		}
@@ -37,12 +37,13 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		type = def;
 		bulletCoolTime = 0;
 		team = teamNum;
-		life = 10;
+		maxLife = 10;
+		life = maxLife;
 		life_time = 6000;
 		attacked = false;
 	}
 	//Building
-	else if (def == 2)
+	else if (def == OBJECT_BUILDING)
 	{
 		x = objx;
 		y = objy;
@@ -57,17 +58,18 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		vecy = 0;
 		type = def;
 		team = teamNum;
-		life = 500;
+		maxLife = 500;
+		life = maxLife;
 		arrowCoolTime = 0;
 		attacked = false;
 	}
 	//Bullet
-	else if (def == 3)
+	else if (def == OBJECT_BULLET)
 	{
 		x = objx;
 		y = objy;
 		z = 0;
-		size = 5;
+		size = 2;
 		if (teamNum == 1)
 		{
 			r = 1;
@@ -87,16 +89,17 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
 		team = teamNum;
-		life = 10;
+		maxLife = 10;
+		life = maxLife;
 		attacked = false;
 	}
 	//Arrow
-	else if (def == 4)
+	else if (def == OBJECT_ARROW)
 	{
 		x = objx;
 		y = objy;
 		z = 0;
-		size = 5;
+		size = 2;
 		if (teamNum == 1)
 		{
 			r = 0.5;
@@ -116,7 +119,8 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
 		team = teamNum;
-		life = 10;
+		maxLife = 10;
+		life = maxLife;
 		attacked = false;
 	}
 }
@@ -141,15 +145,31 @@ void Object::Update(float elapsedTime)
 		attacked = false;
 	}
 
-	if (x >= 250)
+	if (x >= 250) 
+	{
+		if (type == 3 || type == 4)
+			life -= 100;
 		vecx = -vecx;
-	else if (x< -250)
+	}
+	else if (x < -250)
+	{
+		if (type == 3 || type == 4)
+			life -= 100;
 		vecx = -vecx;
+	}
 
 	if (y >= 400)
+	{
+		if (type == 3 || type == 4)
+			life -= 100;
 		vecy = -vecy;
-	else if (y< -400)
+	}
+	else if (y < -400)
+	{
+		if (type == 3 || type == 4)
+			life -= 100;
 		vecy = -vecy;
+	}
 
 	if (life <= 0)
 	{

@@ -1,12 +1,6 @@
 #pragma once
 #include "Renderer.h"
 #include "Object.h"
-
-#define OBJECT_CHARACTER 1
-#define OBJECT_BUILDING 2
-#define OBJECT_BULLET 3
-#define OBJECT_ARROW 4
-#define MAX_OBJECTS_COUNT 200
 class SceneMngr
 {
 public:
@@ -32,5 +26,5 @@ public:
 private:
 	int m_windowWidth;
 	int m_windowHeight;
-	int B_texBuilding[1];
+	int B_texImage[3];
 };

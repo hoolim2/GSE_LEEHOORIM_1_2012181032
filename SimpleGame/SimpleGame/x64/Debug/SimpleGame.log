@@ -1,6 +1,5 @@
-﻿  Object.cpp
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\object.cpp(103): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\object.cpp(104): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\object.cpp(132): warning C4244: '+=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  SimpleGame.cpp
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(34): warning C4244: '초기화 중': 'float'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\gse_3-2lee\gse_leehoorim_1_2012181032\simplegame\simplegame\simplegame.cpp(113): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   SimpleGame.vcxproj -> C:\GSE_3-2lee\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.exe
   SimpleGame.vcxproj -> C:\GSE_3-2lee\GSE_LEEHOORIM_1_2012181032\SimpleGame\x64\Debug\SimpleGame.pdb (Partial PDB)
