@@ -16,6 +16,7 @@ public:
 	int AddBulletObj(int index);
 	int AddBuildingObj(int index , int team, int x, int y);
 	int AddArrowObj(int index);
+	void makeMap();
 	void DrawAllObj();
 	void CollideCheck();
 	void DeleteObj();

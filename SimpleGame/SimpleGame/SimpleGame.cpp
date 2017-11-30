@@ -26,14 +26,12 @@ using namespace std;
 bool left_mouse = false;
 bool right_mouse = false;
 bool makeAllow = false;
-float enemyCoolTime=0.f;
-float allowCoolTime = 0.f;
+float enemyCoolTime=5000.f;
+float allowCoolTime = 3000.f;
 
 SceneMngr *g_SceneMngr = NULL;
 
 DWORD prevTime = 0.0f;
-
-void makeMap();
 
 
 void RenderScene(void)
@@ -58,13 +56,13 @@ void RenderScene(void)
 	for(int i =0; i <MAX_OBJECTS_COUNT ; i++)
 		g_SceneMngr->AddArrowObj(i);
 
-	if (enemyCoolTime >= 5000)
+	if (enemyCoolTime >= 6000)
 	{
 		for (int i = 0; i < 1; i++)
 			g_SceneMngr->AddCommonObj((float)(std::rand() % 400)-200, (float)(std::rand() % 200) + 190, 1);
 		enemyCoolTime = 0;
 	}
-	if (allowCoolTime >= 2000)
+	if (allowCoolTime >= 3000)
 	{
 		makeAllow = true;
 	}
@@ -159,24 +157,13 @@ int main(int argc, char **argv)
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
 
+	g_SceneMngr->makeMap();
 
 	prevTime = timeGetTime();
-
-	makeMap();
 
 	glutMainLoop();
 
 	delete g_SceneMngr;
 
     return 0;
-}
-
-void makeMap()
-{
-	g_SceneMngr->AddBuildingObj(1,1,-150,320);
-	g_SceneMngr->AddBuildingObj(2, 1,150,320);
-	g_SceneMngr->AddBuildingObj(3,1, 0,320);
-	g_SceneMngr->AddBuildingObj(4, 2, -150, -320);
-	g_SceneMngr->AddBuildingObj(5, 2, 150, -320);
-	g_SceneMngr->AddBuildingObj(6, 2, 0, -320);
 }

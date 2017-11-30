@@ -10,7 +10,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 {
 	//Character
 	if (def == OBJECT_CHARACTER) {
-		if (teamNum == 1)
+		if (teamNum == UNIT_ENEMY)
 		{
 			x = objx;
 			y = objy;
@@ -20,7 +20,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			b = 1;
 			a = 1;
 		}
-		else if (teamNum == 2)
+		else if (teamNum == UNIT_AllY)
 		{
 			x = objx;
 			y = objy;
@@ -37,8 +37,9 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		type = def;
 		bulletCoolTime = 0;
 		team = teamNum;
-		maxLife = 10;
+		maxLife = 30;
 		life = maxLife;
+		attacklife = maxLife;
 		life_time = 6000;
 		attacked = false;
 		characterAnmation = 0;
@@ -62,8 +63,10 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		team = teamNum;
 		maxLife = 500;
 		life = maxLife;
+		attacklife = maxLife;
 		arrowCoolTime = 0;
 		attacked = false;
+
 	}
 	//Bullet
 	else if (def == OBJECT_BULLET)
@@ -72,18 +75,18 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		y = objy;
 		z = 0;
 		size = 5;
-		if (teamNum == 1)
+		if (teamNum == UNIT_ENEMY)
 		{
 			r = 1;
-			g = 0;
-			b = 0;
+			g = 0.2;
+			b = 0.5;
 			a = 1;
 		}
-		else if (teamNum == 2)
+		else if (teamNum == UNIT_AllY)
 		{
-			r = 0;
-			g = 0;
-			b = 1;
+			r = 0.2;
+			g = 1;
+			b = 0.2;
 			a = 1;
 		}
 		spd = 500;
@@ -97,6 +100,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		team = teamNum;
 		maxLife = 10;
 		life = maxLife;
+		attacklife = maxLife;
 		attacked = false;
 		particleTime = 0;
 	}
@@ -107,14 +111,14 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		y = objy;
 		z = 0;
 		size = 5;
-		if (teamNum == 1)
+		if (teamNum == UNIT_ENEMY)
 		{
 			r = 0.5;
 			g = 0.2;
 			b = 0.7;
 			a = 1;
 		}
-		else if (teamNum == 2)
+		else if (teamNum == UNIT_AllY)
 		{
 			r = 1;
 			g = 1;
@@ -130,8 +134,9 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			vecy -= 0.2;
 		type = def;
 		team = teamNum;
-		maxLife = 10;
+		maxLife = 20;
 		life = maxLife;
+		attacklife = maxLife;
 		attacked = false;
 		particleTime = 0;
 	}
@@ -141,41 +146,45 @@ Object::Object(float objx, float objy,int teamNum,int def)
 void Object::Update(float elapsedTime)
 {
 	float elapsedTimeSecond = elapsedTime / 1000.f;
+
 	x = x + (spd*vecx)*elapsedTimeSecond;
 	y = y + (spd*vecy)*elapsedTimeSecond;
-	if (type == 1)
+	life_time -= elapsedTimeSecond;
+	particleTime += elapsedTimeSecond;
+	animateTime += elapsedTimeSecond;
+
+	if (attacklife > life)
+	{
+		attacklife -= elapsedTimeSecond * 10;
+	}
+
+	if (type == OBJECT_CHARACTER)
 	{
 		bulletCoolTime += elapsedTime;
 	}
-	else if (type == 2)
+	else if (type == OBJECT_BUILDING)
 	{
 		arrowCoolTime += elapsedTime;
 	}
-	if (attacked)
-	{
-		life -= 10;
-		attacked = false;
-	}
-	particleTime+= elapsedTimeSecond;
-	animateTime += elapsedTimeSecond;
+
 	if (animateTime > 0.1) {
 		characterAnmation++;
 		characterAnmation = characterAnmation % 10;
 		animateTime = 0;
 	}
 
-	if (type == 3 || type == 4)
+	if (type == OBJECT_BULLET || type == OBJECT_ARROW)
 	{
-		if (x >= 250)
+		if (x >= 350)
 		{
-			life -= 100;
+			life -= 100000;
 		}
-		else if (x < -250)
+		else if (x < -350)
 		{
-			life -= 100;
+			life -= 100000;
 		}
 	}
-	if (type == 1)
+	if (type == OBJECT_CHARACTER)
 	{
 		if (x >= 200)
 		{
@@ -189,13 +198,13 @@ void Object::Update(float elapsedTime)
 
 	if (y >= 400)
 	{
-		if (type == 3 || type == 4)
+		if (type == OBJECT_BULLET || type == OBJECT_ARROW)
 			life -= 100;
 		vecy = -vecy;
 	}
 	else if (y < -400)
 	{
-		if (type == 3 || type == 4)
+		if (type == OBJECT_BULLET || type == OBJECT_ARROW)
 			life -= 100;
 		vecy = -vecy;
 	}
@@ -204,7 +213,7 @@ void Object::Update(float elapsedTime)
 	{
 		cout << "is dead" << endl;
 	}
-	if(life_time ==0)
+	if(life_time <=0)
 	{
 		cout << "is dead" << endl;
 	}
@@ -218,6 +227,11 @@ float Object::GetObjX()
 float Object::GetObjY()
 {
 	return y;
+}
+
+void Object::DamageCount(int Damage)
+{
+		life -= Damage;
 }
 
 Object::~Object()

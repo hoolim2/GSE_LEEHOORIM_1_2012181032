@@ -16,18 +16,15 @@ SceneMngr::SceneMngr(int width,int height)
 	B_renderer = new Renderer(width, height);
 	B_texImage[0] = B_renderer->CreatePngTexture("./Resource/resistance.png");
 	B_texImage[1] = B_renderer->CreatePngTexture("./Resource/polite.png");
-	B_texImage[2] = B_renderer->CreatePngTexture("./Resource/linksprite_foward.png");
-	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/linksprite.png");
-	B_texImage[4] = B_renderer->CreatePngTexture("./Resource/background.png");
+	B_texImage[2] = B_renderer->CreatePngTexture("./Resource/character_Darklink.png");
+	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/character_link.png");
+	B_texImage[4] = B_renderer->CreatePngTexture("./Resource/background_ground.png");
 	B_texImage[5] = B_renderer->CreatePngTexture("./Resource/particle.png");
-
-	
 
 	if (!m_renderer->IsInitialized())
 	{
 		std::cout << "Renderer could not be initialized.. \n";
 	}
-
 
 	m_windowWidth = width;
 	m_windowHeight = height;
@@ -42,6 +39,17 @@ SceneMngr::~SceneMngr()
 {
 }
 
+void SceneMngr::makeMap()
+{
+	AddBuildingObj(1, UNIT_ENEMY, -150, 320);
+	AddBuildingObj(2, 1, 150, 320);
+	AddBuildingObj(3, 1, 0, 320);
+
+	AddBuildingObj(4, UNIT_AllY, -150, -320);
+	AddBuildingObj(5, UNIT_AllY, 150, -320);
+	AddBuildingObj(6, UNIT_AllY, 0, -320);
+}
+
 void SceneMngr::DrawAllObj()
 {
 	B_renderer->DrawTexturedRect(0, 0, 0, 800, 1, 1, 1, 1, B_texImage[4], 0.9);
@@ -52,9 +60,8 @@ void SceneMngr::DrawAllObj()
 			// Renderer Test
 			if (m_objects[i]->type == OBJECT_BUILDING)
 			{
-				if (m_objects[i]->team == 1)
+				if (m_objects[i]->team == UNIT_ENEMY)
 				{
-					cout << m_objects[i]->life << endl;
 					B_renderer->DrawTexturedRect
 					(
 						m_objects[i]->x,
@@ -71,19 +78,33 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size/2,
+						0,
+						m_objects[i]->size,
+						9,
+						1,
+						0,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
+						(float)m_objects[i]->attacklife / m_objects[i]->maxLife,
+						0.2
+					);
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
 						m_objects[i]->y+m_objects[i]->size/2,
 						0,
 						m_objects[i]->size,
-						5,
+						9,
+						1,
 						1,
 						0,
-						0,
-						1,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
 						(float)m_objects[i]->life/ m_objects[i]->maxLife,
 						0.1
 					);
 				}
-				if (m_objects[i]->team == 2)
+				if (m_objects[i]->team == UNIT_AllY)
 				{
 					B_renderer->DrawTexturedRect
 					(
@@ -103,11 +124,25 @@ void SceneMngr::DrawAllObj()
 						m_objects[i]->y + m_objects[i]->size/2,
 						0,
 						m_objects[i]->size,
-						5,
+						9,
+						1,
 						0,
 						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
+						(float)m_objects[i]->attacklife / m_objects[i]->maxLife,
+						0.2
+					);
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size/2,
+						0,
+						m_objects[i]->size,
+						9,
+						0,
 						1,
-						1,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
 						(float)m_objects[i]->life / m_objects[i]->maxLife,
 						0.1
 					);
@@ -115,7 +150,7 @@ void SceneMngr::DrawAllObj()
 			}
 			else if(m_objects[i]->type == OBJECT_CHARACTER)
 			{
-				if (m_objects[i]->team == 1)
+				if (m_objects[i]->team == UNIT_ENEMY)
 				{
 					B_renderer->DrawTexturedRectSeq
 					(
@@ -137,19 +172,33 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
-						m_objects[i]->y + m_objects[i]->size + 5,
+						m_objects[i]->y + m_objects[i]->size,
 						0,
 						m_objects[i]->size,
-						5,
+						9,
 						1,
 						0,
 						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
+						(float)m_objects[i]->attacklife / m_objects[i]->maxLife,
+						0.2
+					);
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size,
+						0,
+						m_objects[i]->size,
+						9,
 						1,
+						1,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
 						(float)m_objects[i]->life / m_objects[i]->maxLife,
 						0.1
 					);
 				}
-				else if (m_objects[i]->team == 2)
+				else if (m_objects[i]->team == UNIT_AllY)
 				{
 					B_renderer->DrawTexturedRectSeq
 					(
@@ -171,14 +220,28 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
-						m_objects[i]->y + m_objects[i]->size + 5,
+						m_objects[i]->y + m_objects[i]->size,
 						0,
 						m_objects[i]->size,
-						5,
+						9,
+						1,
 						0,
 						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.2,
+						(float)m_objects[i]->attacklife / m_objects[i]->maxLife,
+						0.2
+					);
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size,
+						0,
+						m_objects[i]->size,
+						9,
+						0,
 						1,
-						1,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife+0.2,
 						(float)m_objects[i]->life / m_objects[i]->maxLife,
 						0.1
 					);
@@ -190,13 +253,13 @@ void SceneMngr::DrawAllObj()
 					m_objects[i]->x,
 					m_objects[i]->y,
 					0,
-					5,
-					1,
-					1,
-					1,
-					1,
-					-m_objects[i]->vecx *5,
-					-m_objects[i]->vecy *5,
+					10,//size
+					m_objects[i]->r,
+					m_objects[i]->g,
+					m_objects[i]->b,
+					m_objects[i]->a,
+					-m_objects[i]->vecx *4,
+					-m_objects[i]->vecy *4,
 					B_texImage[5],
 					m_objects[i]->particleTime
 				);
@@ -246,7 +309,7 @@ int SceneMngr::AddBulletObj(int index)
 {
 	if (!m_objects[index] == NULL)
 	{
-		if (m_objects[index]->type == OBJECT_CHARACTER && m_objects[index]->bulletCoolTime >= 1000)
+		if (m_objects[index]->type == OBJECT_CHARACTER && m_objects[index]->bulletCoolTime >= 2000)
 		{
 			for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 			{
@@ -288,19 +351,14 @@ void SceneMngr::CollideCheck()
 
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
-		int opponentType = -1;
 		collisionCount = 0;
 		if (m_objects[i] != NULL)
 		{
 			for (int j = 0; j < MAX_OBJECTS_COUNT; j++)
 			{
-				int enemylife = 0;
-				if (i == j)
-					continue;
-
 				if (m_objects[j] != NULL)
 				{
-					if(!(m_objects[i]->type *m_objects[j]-> type== 12&&
+					if(!(m_objects[i]->type * m_objects[j]-> type== 12&& //!(bullet&arrow collide)
 						m_objects[i]->type ==m_objects[j]->type))
 					{
 						if (!(m_objects[i]->team == m_objects[j]->team))
@@ -317,8 +375,130 @@ void SceneMngr::CollideCheck()
 							top1 = m_objects[j]->y + m_objects[j]->size / 2.0f;
 							if (BoxCollisionTest(left, bottom, right, top, left1, bottom1, right1, top1))
 							{
-								opponentType = m_objects[j]->type;
-								collisionCount++;
+								if (
+									(m_objects[i]->type == OBJECT_BUILDING)
+									&&
+									(m_objects[j]->type == OBJECT_CHARACTER)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[i]->DamageCount(m_objects[j]->life);
+									m_objects[j]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[j]->type == OBJECT_BUILDING)
+									&&
+									(m_objects[i]->type == OBJECT_CHARACTER)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[j]->DamageCount(m_objects[i]->life);
+									m_objects[i]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[i]->type == OBJECT_CHARACTER)
+									&&
+									(m_objects[j]->type == OBJECT_BULLET)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[i]->DamageCount(m_objects[j]->life);
+									m_objects[j]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[j]->type == OBJECT_CHARACTER)
+									&&
+									(m_objects[i]->type == OBJECT_BULLET)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[j]->DamageCount(m_objects[i]->life);
+									m_objects[i]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[i]->type == OBJECT_CHARACTER)
+									&&
+									(m_objects[j]->type == OBJECT_ARROW)
+									&&
+									(j != i)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[i]->DamageCount(m_objects[j]->life);
+									m_objects[j]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[j]->type == OBJECT_CHARACTER)
+									&&
+									(m_objects[i]->type == OBJECT_ARROW)
+									&&
+									(i != j)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[j]->DamageCount(m_objects[i]->life);
+									m_objects[i]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[i]->type == OBJECT_BUILDING)
+									&&
+									(m_objects[j]->type == OBJECT_ARROW)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[i]->DamageCount(m_objects[j]->life);
+									m_objects[j]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[j]->type == OBJECT_BUILDING)
+									&&
+									(m_objects[i]->type == OBJECT_ARROW)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[j]->DamageCount(m_objects[i]->life);
+									m_objects[i]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[i]->type == OBJECT_BUILDING)
+									&&
+									(m_objects[j]->type == OBJECT_BULLET)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[i]->DamageCount(m_objects[j]->life);
+									m_objects[j]->life = 0.f;
+									collisionCount++;
+								}
+								else if (
+									(m_objects[j]->type == OBJECT_BUILDING)
+									&&
+									(m_objects[i]->type == OBJECT_BULLET)
+									&&
+									(m_objects[i]->team != m_objects[j]->team)
+									)
+								{
+									m_objects[j]->DamageCount(m_objects[i]->life);
+									m_objects[i]->life = 0.f;
+									collisionCount++;
+								}
 							}
 						}
 					}
@@ -326,28 +506,24 @@ void SceneMngr::CollideCheck()
 			}
 			if (collisionCount > 0)
 			{
-				if (!(m_objects[i]->type == OBJECT_CHARACTER&& opponentType == OBJECT_CHARACTER))
-				{
-					m_objects[i]->r = 1;
-					m_objects[i]->g = 0;
-					m_objects[i]->b = 0;
-					m_objects[i]->a = 1;
-					m_objects[i]->attacked = true;
-				}
+				m_objects[i]->r = 1;
+				m_objects[i]->g = 0;
+				m_objects[i]->b = 0;
+				m_objects[i]->a = 1;
 				DeleteObj();
 			}
 			else
 			{
 				if (m_objects[i]->type == OBJECT_CHARACTER)
 				{
-					if (m_objects[i]->team == 1)
+					if (m_objects[i]->team == UNIT_ENEMY)
 					{
 						m_objects[i]->r = 1;
 						m_objects[i]->g = 1;
 						m_objects[i]->b = 1;
 						m_objects[i]->a = 1;
 					}
-					else if (m_objects[i]->team == 2)
+					else if (m_objects[i]->team == UNIT_AllY)
 					{
 						m_objects[i]->r = 1;
 						m_objects[i]->g = 1;
@@ -364,31 +540,31 @@ void SceneMngr::CollideCheck()
 				}
 				else if (m_objects[i]->type == OBJECT_BULLET)
 				{
-					if (m_objects[i]->team == 1)
+					if (m_objects[i]->team == UNIT_ENEMY)
 					{
 						m_objects[i]->r = 1;
-						m_objects[i]->g = 0;
-						m_objects[i]->b = 0;
+						m_objects[i]->g = 0.2;
+						m_objects[i]->b = 0.5;
 						m_objects[i]->a = 1;
 					}
-					else if (m_objects[i]->team == 2)
+					else if (m_objects[i]->team == UNIT_AllY)
 					{
-						m_objects[i]->r = 0;
-						m_objects[i]->g = 0;
-						m_objects[i]->b = 1;
+						m_objects[i]->r = 0.2;
+						m_objects[i]->g = 1;
+						m_objects[i]->b = 0.2;
 						m_objects[i]->a = 1;
 					}
 				}
 				else if (m_objects[i]->type == OBJECT_ARROW)
 				{
-					if (m_objects[i]->team == 1)
+					if (m_objects[i]->team == UNIT_ENEMY)
 					{
 						m_objects[i]->r = 0.5;
 						m_objects[i]->g = 0.2;
 						m_objects[i]->b = 0.7;
 						m_objects[i]->a = 1;
 					}
-					else if (m_objects[i]->team == 2)
+					else if (m_objects[i]->team == UNIT_AllY)
 					{
 						m_objects[i]->r = 1;
 						m_objects[i]->g = 1;
