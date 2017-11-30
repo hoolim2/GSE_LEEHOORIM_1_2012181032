@@ -3,8 +3,8 @@ class Object
 {
 
 public:
-	float x, y, z, size, r, g, b, a,spd,vecx,vecy,life_time, arrowCoolTime;
-	int life, maxLife, type, bulletCoolTime, team;
+	float x, y, z, size, r, g, b, a,spd,vecx,vecy,life_time, arrowCoolTime, animateTime, particleTime;
+	int life, maxLife, type, bulletCoolTime, team, characterAnmation;
 	bool attacked;
 	Object(float x, float y, int teamNum, int def);
 	~Object();

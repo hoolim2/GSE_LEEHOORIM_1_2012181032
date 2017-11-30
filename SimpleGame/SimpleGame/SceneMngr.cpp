@@ -16,8 +16,12 @@ SceneMngr::SceneMngr(int width,int height)
 	B_renderer = new Renderer(width, height);
 	B_texImage[0] = B_renderer->CreatePngTexture("./Resource/resistance.png");
 	B_texImage[1] = B_renderer->CreatePngTexture("./Resource/polite.png");
-	B_texImage[2] = B_renderer->CreatePngTexture("./Resource/resistbullet.png");
-	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/politebullet.png");
+	B_texImage[2] = B_renderer->CreatePngTexture("./Resource/linksprite_foward.png");
+	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/linksprite.png");
+	B_texImage[4] = B_renderer->CreatePngTexture("./Resource/background.png");
+	B_texImage[5] = B_renderer->CreatePngTexture("./Resource/particle.png");
+
+	
 
 	if (!m_renderer->IsInitialized())
 	{
@@ -40,6 +44,7 @@ SceneMngr::~SceneMngr()
 
 void SceneMngr::DrawAllObj()
 {
+	B_renderer->DrawTexturedRect(0, 0, 0, 800, 1, 1, 1, 1, B_texImage[4], 0.9);
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
 		if (m_objects[i] != NULL)
@@ -112,7 +117,7 @@ void SceneMngr::DrawAllObj()
 			{
 				if (m_objects[i]->team == 1)
 				{
-					B_renderer->DrawTexturedRect
+					B_renderer->DrawTexturedRectSeq
 					(
 						m_objects[i]->x,
 						m_objects[i]->y,
@@ -123,6 +128,10 @@ void SceneMngr::DrawAllObj()
 						m_objects[i]->b,
 						m_objects[i]->a,
 						B_texImage[2],
+						m_objects[i]->characterAnmation,
+						0,
+						10,
+						1,
 						0.1
 					);
 					m_renderer->DrawSolidRectGauge
@@ -130,7 +139,7 @@ void SceneMngr::DrawAllObj()
 						m_objects[i]->x,
 						m_objects[i]->y + m_objects[i]->size + 5,
 						0,
-						m_objects[i]->size * 3,
+						m_objects[i]->size,
 						5,
 						1,
 						0,
@@ -142,7 +151,7 @@ void SceneMngr::DrawAllObj()
 				}
 				else if (m_objects[i]->team == 2)
 				{
-					B_renderer->DrawTexturedRect
+					B_renderer->DrawTexturedRectSeq
 					(
 						m_objects[i]->x,
 						m_objects[i]->y,
@@ -153,6 +162,10 @@ void SceneMngr::DrawAllObj()
 						m_objects[i]->b,
 						m_objects[i]->a,
 						B_texImage[3],
+						m_objects[i]->characterAnmation,
+						0,
+						10,
+						1,
 						0.1
 					);
 					m_renderer->DrawSolidRectGauge
@@ -160,7 +173,7 @@ void SceneMngr::DrawAllObj()
 						m_objects[i]->x,
 						m_objects[i]->y + m_objects[i]->size + 5,
 						0,
-						m_objects[i]->size * 3,
+						m_objects[i]->size,
 						5,
 						0,
 						0,
@@ -173,6 +186,20 @@ void SceneMngr::DrawAllObj()
 			}
 			else
 			{
+				m_renderer->DrawParticle(
+					m_objects[i]->x,
+					m_objects[i]->y,
+					0,
+					5,
+					1,
+					1,
+					1,
+					1,
+					-m_objects[i]->vecx *5,
+					-m_objects[i]->vecy *5,
+					B_texImage[5],
+					m_objects[i]->particleTime
+				);
 				m_renderer->DrawSolidRect(
 					m_objects[i]->x,
 					m_objects[i]->y,

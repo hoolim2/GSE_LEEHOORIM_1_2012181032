@@ -30,7 +30,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			b = 1;
 			a = 1;
 		}
-		size = 20;
+		size = 50;
 		spd = 100;
 		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
@@ -41,6 +41,8 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		life = maxLife;
 		life_time = 6000;
 		attacked = false;
+		characterAnmation = 0;
+		animateTime = 0;
 	}
 	//Building
 	else if (def == OBJECT_BUILDING)
@@ -69,7 +71,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		x = objx;
 		y = objy;
 		z = 0;
-		size = 2;
+		size = 5;
 		if (teamNum == 1)
 		{
 			r = 1;
@@ -87,11 +89,16 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		spd = 500;
 		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		if (vecy < 0.3&&vecy >0)
+			vecy += 0.2;
+		if (vecy > -0.3&&vecy <0)
+			vecy -= 0.2;
 		type = def;
 		team = teamNum;
 		maxLife = 10;
 		life = maxLife;
 		attacked = false;
+		particleTime = 0;
 	}
 	//Arrow
 	else if (def == OBJECT_ARROW)
@@ -99,7 +106,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		x = objx;
 		y = objy;
 		z = 0;
-		size = 2;
+		size = 5;
 		if (teamNum == 1)
 		{
 			r = 0.5;
@@ -117,11 +124,16 @@ Object::Object(float objx, float objy,int teamNum,int def)
 		spd = 500;
 		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
+		if (vecy < 0.3&&vecy >0)
+			vecy += 0.2;
+		if (vecy > -0.3&&vecy <0)
+			vecy -= 0.2;
 		type = def;
 		team = teamNum;
 		maxLife = 10;
 		life = maxLife;
 		attacked = false;
+		particleTime = 0;
 	}
 }
 
@@ -144,18 +156,35 @@ void Object::Update(float elapsedTime)
 		life -= 10;
 		attacked = false;
 	}
-
-	if (x >= 250) 
-	{
-		if (type == 3 || type == 4)
-			life -= 100;
-		vecx = -vecx;
+	particleTime+= elapsedTimeSecond;
+	animateTime += elapsedTimeSecond;
+	if (animateTime > 0.1) {
+		characterAnmation++;
+		characterAnmation = characterAnmation % 10;
+		animateTime = 0;
 	}
-	else if (x < -250)
+
+	if (type == 3 || type == 4)
 	{
-		if (type == 3 || type == 4)
+		if (x >= 250)
+		{
 			life -= 100;
-		vecx = -vecx;
+		}
+		else if (x < -250)
+		{
+			life -= 100;
+		}
+	}
+	if (type == 1)
+	{
+		if (x >= 200)
+		{
+			vecx = -vecx;
+		}
+		else if (x < -200)
+		{
+			vecx = -vecx;
+		}
 	}
 
 	if (y >= 400)

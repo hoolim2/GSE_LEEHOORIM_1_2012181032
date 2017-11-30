@@ -58,13 +58,13 @@ void RenderScene(void)
 	for(int i =0; i <MAX_OBJECTS_COUNT ; i++)
 		g_SceneMngr->AddArrowObj(i);
 
-	if (enemyCoolTime >= 2000)
+	if (enemyCoolTime >= 5000)
 	{
 		for (int i = 0; i < 1; i++)
-			g_SceneMngr->AddCommonObj((float)(std::rand() % 500)-250, (float)(std::rand() % 200) + 190, 1);
+			g_SceneMngr->AddCommonObj((float)(std::rand() % 400)-200, (float)(std::rand() % 200) + 190, 1);
 		enemyCoolTime = 0;
 	}
-	if (allowCoolTime >= 200)
+	if (allowCoolTime >= 2000)
 	{
 		makeAllow = true;
 	}
@@ -109,7 +109,7 @@ void MouseInput(int button, int state, int x,int y)
 			if (right_mouse&&makeAllow)
 			{
 				for (int i = 0; i < 1; i++)
-					if((-y + 400)<0)
+					if((-y + 400)<0&&(x-250)>-200&& (x - 250)<200)
 					g_SceneMngr->AddCommonObj(x-250 , -y + 400 , 2);
 				allowCoolTime = 0;
 				makeAllow = false;
@@ -173,10 +173,10 @@ int main(int argc, char **argv)
 
 void makeMap()
 {
-	g_SceneMngr->AddBuildingObj(1,1,-200,320);
-	g_SceneMngr->AddBuildingObj(2, 1,200,320);
+	g_SceneMngr->AddBuildingObj(1,1,-150,320);
+	g_SceneMngr->AddBuildingObj(2, 1,150,320);
 	g_SceneMngr->AddBuildingObj(3,1, 0,320);
-	g_SceneMngr->AddBuildingObj(4, 2, -200, -320);
-	g_SceneMngr->AddBuildingObj(5, 2, 200, -320);
+	g_SceneMngr->AddBuildingObj(4, 2, -150, -320);
+	g_SceneMngr->AddBuildingObj(5, 2, 150, -320);
 	g_SceneMngr->AddBuildingObj(6, 2, 0, -320);
 }

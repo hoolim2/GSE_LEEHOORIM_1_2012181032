@@ -26,5 +26,5 @@ public:
 private:
 	int m_windowWidth;
 	int m_windowHeight;
-	int B_texImage[3];
+	int B_texImage[4];
 };
