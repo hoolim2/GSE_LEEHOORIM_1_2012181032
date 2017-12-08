@@ -26,12 +26,14 @@ using namespace std;
 bool left_mouse = false;
 bool right_mouse = false;
 bool makeAllow = false;
-float enemyCoolTime=5000.f;
-float allowCoolTime = 3000.f;
+float enemyCoolTime = 3000.f;
+float allowCoolTime = 2000.f;
 
 SceneMngr *g_SceneMngr = NULL;
 
 DWORD prevTime = 0.0f;
+
+void makeMap();
 
 
 void RenderScene(void)
@@ -53,22 +55,22 @@ void RenderScene(void)
 
 	for (int i = 0; i <MAX_OBJECTS_COUNT; i++)
 		g_SceneMngr->AddBulletObj(i);
-	for(int i =0; i <MAX_OBJECTS_COUNT ; i++)
+	for (int i = 0; i <MAX_OBJECTS_COUNT; i++)
 		g_SceneMngr->AddArrowObj(i);
 
-	if (enemyCoolTime >= 6000)
+	if (enemyCoolTime >= 3000)
 	{
 		for (int i = 0; i < 1; i++)
-			g_SceneMngr->AddCommonObj((float)(std::rand() % 400)-200, (float)(std::rand() % 200) + 190, 1);
+			g_SceneMngr->AddCommonObj((float)(std::rand() % 400) - 200, (float)(std::rand() % 200) + 190, 1);
 		enemyCoolTime = 0;
 	}
-	if (allowCoolTime >= 3000)
+	if (allowCoolTime >= 2000)
 	{
 		makeAllow = true;
 	}
-	
+
 	// Renderer Test 기본오브젝트
-	
+
 	glutSwapBuffers();
 }
 
@@ -77,7 +79,7 @@ void Idle(void)
 	RenderScene();
 }
 
-void MouseInput(int button, int state, int x,int y)
+void MouseInput(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 	{
@@ -90,7 +92,15 @@ void MouseInput(int button, int state, int x,int y)
 	{
 		if (state == GLUT_UP)
 		{
-			left_mouse = false;
+			if (left_mouse&&makeAllow)
+			{
+				for (int i = 0; i < 1; i++)
+					if ((-y + 400)<0 && (x - 250)>-200 && (x - 250)<200)
+						g_SceneMngr->AddCommonObj(x - 250, -y + 400, 2);
+				allowCoolTime = 0;
+				makeAllow = false;
+				left_mouse = false;
+			}
 		}
 	}
 	if (button == GLUT_RIGHT_BUTTON)
@@ -104,15 +114,7 @@ void MouseInput(int button, int state, int x,int y)
 	{
 		if (state == GLUT_UP)
 		{
-			if (right_mouse&&makeAllow)
-			{
-				for (int i = 0; i < 1; i++)
-					if((-y + 400)<0&&(x-250)>-200&& (x - 250)<200)
-					g_SceneMngr->AddCommonObj(x-250 , -y + 400 , 2);
-				allowCoolTime = 0;
-				makeAllow = false;
-				right_mouse = false;
-			}
+			right_mouse = false;
 		}
 	}
 	RenderScene();
@@ -130,7 +132,7 @@ void SpecialKeyInput(int key, int x, int y)
 
 int main(int argc, char **argv)
 {
-	
+
 	// Initialize GL things
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -157,13 +159,24 @@ int main(int argc, char **argv)
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
 
-	g_SceneMngr->makeMap();
 
 	prevTime = timeGetTime();
+
+	makeMap();
 
 	glutMainLoop();
 
 	delete g_SceneMngr;
 
-    return 0;
+	return 0;
+}
+
+void makeMap()
+{
+	g_SceneMngr->AddBuildingObj(1, 1, -150, 320);
+	g_SceneMngr->AddBuildingObj(2, 1, 150, 320);
+	g_SceneMngr->AddBuildingObj(3, 1, 0, 320);
+	g_SceneMngr->AddBuildingObj(4, 2, -150, -320);
+	g_SceneMngr->AddBuildingObj(5, 2, 150, -320);
+	g_SceneMngr->AddBuildingObj(6, 2, 0, -320);
 }

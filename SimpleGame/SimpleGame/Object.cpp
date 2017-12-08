@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Object::Object(float objx, float objy,int teamNum,int def)
+Object::Object(float objx, float objy, int teamNum, int def)
 {
 	//Character
 	if (def == OBJECT_CHARACTER) {
@@ -20,7 +20,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			b = 1;
 			a = 1;
 		}
-		else if (teamNum == UNIT_AllY)
+		else if (teamNum == UNIT_ALLY)
 		{
 			x = objx;
 			y = objy;
@@ -82,7 +82,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			b = 0.5;
 			a = 1;
 		}
-		else if (teamNum == UNIT_AllY)
+		else if (teamNum == UNIT_ALLY)
 		{
 			r = 0.2;
 			g = 1;
@@ -118,7 +118,7 @@ Object::Object(float objx, float objy,int teamNum,int def)
 			b = 0.7;
 			a = 1;
 		}
-		else if (teamNum == UNIT_AllY)
+		else if (teamNum == UNIT_ALLY)
 		{
 			r = 1;
 			g = 1;
@@ -195,27 +195,27 @@ void Object::Update(float elapsedTime)
 			vecx = -vecx;
 		}
 	}
-
-	if (y >= 400)
+	if (type == OBJECT_BULLET || type == OBJECT_ARROW)
 	{
-		if (type == OBJECT_BULLET || type == OBJECT_ARROW)
-			life -= 100;
-		vecy = -vecy;
+		if (y >= 500)
+		{
+			life -= 100000;
+		}
+		else if (y < -500)
+		{
+			life -= 100000;
+		}
 	}
-	else if (y < -400)
+	if (type == OBJECT_CHARACTER)
 	{
-		if (type == OBJECT_BULLET || type == OBJECT_ARROW)
-			life -= 100;
-		vecy = -vecy;
-	}
-
-	if (life <= 0)
-	{
-		cout << "is dead" << endl;
-	}
-	if(life_time <=0)
-	{
-		cout << "is dead" << endl;
+		if (y >= 350)
+		{
+			vecx = -vecx;
+		}
+		else if (y < -350)
+		{
+			vecx = -vecx;
+		}
 	}
 }
 
@@ -231,7 +231,7 @@ float Object::GetObjY()
 
 void Object::DamageCount(int Damage)
 {
-		life -= Damage;
+	life -= Damage;
 }
 
 Object::~Object()

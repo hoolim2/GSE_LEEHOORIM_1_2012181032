@@ -4,22 +4,28 @@
 #include "Object.h"
 #include "cstdlib"
 #include "ctime"
+#include "Sound.h"
 
 using namespace std;
 
 float objx = rand() % 250;
 float objy = rand() % 250;
 
-SceneMngr::SceneMngr(int width,int height)
+SceneMngr::SceneMngr(int width, int height)
 {
+	MakeMap();
+
 	m_renderer = new Renderer(width, height);
 	B_renderer = new Renderer(width, height);
+	m_sound = new Sound();
+
 	B_texImage[0] = B_renderer->CreatePngTexture("./Resource/resistance.png");
 	B_texImage[1] = B_renderer->CreatePngTexture("./Resource/polite.png");
 	B_texImage[2] = B_renderer->CreatePngTexture("./Resource/character_Darklink.png");
 	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/character_link.png");
 	B_texImage[4] = B_renderer->CreatePngTexture("./Resource/background_ground.png");
 	B_texImage[5] = B_renderer->CreatePngTexture("./Resource/particle.png");
+	soundBG = m_sound->CreateSound("./Resource/CheetahMenTheme.flac");
 
 	if (!m_renderer->IsInitialized())
 	{
@@ -33,21 +39,22 @@ SceneMngr::SceneMngr(int width,int height)
 	{
 		m_objects[i] = NULL;
 	}
+	m_sound->PlaySound(soundBG, true, 100);
 }
 
 SceneMngr::~SceneMngr()
 {
 }
 
-void SceneMngr::makeMap()
+void SceneMngr::MakeMap()
 {
 	AddBuildingObj(1, UNIT_ENEMY, -150, 320);
-	AddBuildingObj(2, 1, 150, 320);
-	AddBuildingObj(3, 1, 0, 320);
+	AddBuildingObj(2, UNIT_ENEMY, 150, 320);
+	AddBuildingObj(3, UNIT_ENEMY, 0, 320);
 
-	AddBuildingObj(4, UNIT_AllY, -150, -320);
-	AddBuildingObj(5, UNIT_AllY, 150, -320);
-	AddBuildingObj(6, UNIT_AllY, 0, -320);
+	AddBuildingObj(4, UNIT_ALLY, -150, -320);
+	AddBuildingObj(5, UNIT_ALLY, 150, -320);
+	AddBuildingObj(6, UNIT_ALLY, 0, -320);
 }
 
 void SceneMngr::DrawAllObj()
@@ -78,7 +85,7 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
-						m_objects[i]->y + m_objects[i]->size/2,
+						m_objects[i]->y + m_objects[i]->size / 2,
 						0,
 						m_objects[i]->size,
 						9,
@@ -92,7 +99,7 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
-						m_objects[i]->y+m_objects[i]->size/2,
+						m_objects[i]->y + m_objects[i]->size / 2,
 						0,
 						m_objects[i]->size,
 						9,
@@ -100,11 +107,11 @@ void SceneMngr::DrawAllObj()
 						1,
 						0,
 						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
-						(float)m_objects[i]->life/ m_objects[i]->maxLife,
+						(float)m_objects[i]->life / m_objects[i]->maxLife,
 						0.1
 					);
 				}
-				if (m_objects[i]->team == UNIT_AllY)
+				if (m_objects[i]->team == UNIT_ALLY)
 				{
 					B_renderer->DrawTexturedRect
 					(
@@ -121,7 +128,7 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
-						m_objects[i]->y + m_objects[i]->size/2,
+						m_objects[i]->y + m_objects[i]->size / 2,
 						0,
 						m_objects[i]->size,
 						9,
@@ -135,7 +142,7 @@ void SceneMngr::DrawAllObj()
 					m_renderer->DrawSolidRectGauge
 					(
 						m_objects[i]->x,
-						m_objects[i]->y + m_objects[i]->size/2,
+						m_objects[i]->y + m_objects[i]->size / 2,
 						0,
 						m_objects[i]->size,
 						9,
@@ -148,7 +155,7 @@ void SceneMngr::DrawAllObj()
 					);
 				}
 			}
-			else if(m_objects[i]->type == OBJECT_CHARACTER)
+			else if (m_objects[i]->type == OBJECT_CHARACTER)
 			{
 				if (m_objects[i]->team == UNIT_ENEMY)
 				{
@@ -198,7 +205,7 @@ void SceneMngr::DrawAllObj()
 						0.1
 					);
 				}
-				else if (m_objects[i]->team == UNIT_AllY)
+				else if (m_objects[i]->team == UNIT_ALLY)
 				{
 					B_renderer->DrawTexturedRectSeq
 					(
@@ -241,7 +248,7 @@ void SceneMngr::DrawAllObj()
 						0,
 						1,
 						0,
-						(float)m_objects[i]->life / m_objects[i]->maxLife+0.2,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.2,
 						(float)m_objects[i]->life / m_objects[i]->maxLife,
 						0.1
 					);
@@ -258,8 +265,8 @@ void SceneMngr::DrawAllObj()
 					m_objects[i]->g,
 					m_objects[i]->b,
 					m_objects[i]->a,
-					-m_objects[i]->vecx *4,
-					-m_objects[i]->vecy *4,
+					-m_objects[i]->vecx * 4,
+					-m_objects[i]->vecy * 4,
 					B_texImage[5],
 					m_objects[i]->particleTime
 				);
@@ -279,7 +286,7 @@ void SceneMngr::DrawAllObj()
 	}
 }
 
-int SceneMngr::AddCommonObj(float x, float y,int team)
+int SceneMngr::AddCommonObj(float x, float y, int team)
 {
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
@@ -292,13 +299,13 @@ int SceneMngr::AddCommonObj(float x, float y,int team)
 	return -1;
 }
 
-int SceneMngr::AddBuildingObj(int index,int team,int x,int y)
+int SceneMngr::AddBuildingObj(int index, int team, int x, int y)
 {
 	for (int i = 0; i < index; i++)
 	{
 		if (m_objects[i] == NULL)
 		{
-			m_objects[i]= new Object(x, y, team, OBJECT_BUILDING);
+			m_objects[i] = new Object(x, y, team, OBJECT_BUILDING);
 			return i;
 		}
 	}
@@ -335,7 +342,7 @@ int SceneMngr::AddArrowObj(int index)
 			{
 				if (m_objects[i] == NULL)
 				{
-					m_objects[i] = new Object(m_objects[index]->x, m_objects[index]->y, m_objects[index]->team,OBJECT_ARROW);
+					m_objects[i] = new Object(m_objects[index]->x, m_objects[index]->y, m_objects[index]->team, OBJECT_ARROW);
 					m_objects[index]->arrowCoolTime = 0;
 					return i;
 				}
@@ -358,8 +365,8 @@ void SceneMngr::CollideCheck()
 			{
 				if (m_objects[j] != NULL)
 				{
-					if(!(m_objects[i]->type * m_objects[j]-> type== 12&& //!(bullet&arrow collide)
-						m_objects[i]->type ==m_objects[j]->type))
+					if (!(m_objects[i]->type * m_objects[j]->type == 12 && //!(bullet&arrow collide)
+						m_objects[i]->type == m_objects[j]->type))
 					{
 						if (!(m_objects[i]->team == m_objects[j]->team))
 						{
@@ -384,6 +391,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
+									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -396,6 +404,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
+									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -408,6 +417,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
+									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -420,6 +430,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
+									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -434,6 +445,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
+									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -448,6 +460,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
+									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -460,6 +473,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
+									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -472,6 +486,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
+									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -484,6 +499,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
+									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -496,6 +512,7 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
+									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -523,7 +540,7 @@ void SceneMngr::CollideCheck()
 						m_objects[i]->b = 1;
 						m_objects[i]->a = 1;
 					}
-					else if (m_objects[i]->team == UNIT_AllY)
+					else if (m_objects[i]->team == UNIT_ALLY)
 					{
 						m_objects[i]->r = 1;
 						m_objects[i]->g = 1;
@@ -547,7 +564,7 @@ void SceneMngr::CollideCheck()
 						m_objects[i]->b = 0.5;
 						m_objects[i]->a = 1;
 					}
-					else if (m_objects[i]->team == UNIT_AllY)
+					else if (m_objects[i]->team == UNIT_ALLY)
 					{
 						m_objects[i]->r = 0.2;
 						m_objects[i]->g = 1;
@@ -564,7 +581,7 @@ void SceneMngr::CollideCheck()
 						m_objects[i]->b = 0.7;
 						m_objects[i]->a = 1;
 					}
-					else if (m_objects[i]->team == UNIT_AllY)
+					else if (m_objects[i]->team == UNIT_ALLY)
 					{
 						m_objects[i]->r = 1;
 						m_objects[i]->g = 1;
@@ -595,6 +612,8 @@ bool SceneMngr::BoxCollisionTest(float minX, float minY, float maxX, float maxY,
 
 void SceneMngr::Update(float elapsedTime)
 {
+	m_renderer->SetSceneTransform(0, 0, 1, 1);
+	B_renderer->SetSceneTransform(0, 0, 1, 1);
 	CollideCheck();
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
@@ -620,3 +639,8 @@ void SceneMngr::DeleteObj()
 	}
 }
 
+void SceneMngr::GroundShaker(int amount)
+{
+	m_renderer->SetSceneTransform(amount, 0, 1, 1);
+	B_renderer->SetSceneTransform(amount, 0, 1, 1);
+}

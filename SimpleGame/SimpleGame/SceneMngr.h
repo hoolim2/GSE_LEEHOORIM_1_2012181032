@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Object.h"
+#include "Sound.h"
 class SceneMngr
 {
 public:
@@ -11,15 +12,18 @@ public:
 
 	Renderer *m_renderer;
 	Renderer *B_renderer;
+	Sound *m_sound;
 
 	int AddCommonObj(float x, float y, int team);
 	int AddBulletObj(int index);
 	int AddBuildingObj(int index , int team, int x, int y);
 	int AddArrowObj(int index);
-	void makeMap();
+	int soundBG;
+	void GroundShaker(int amount);
 	void DrawAllObj();
 	void CollideCheck();
 	void DeleteObj();
+	void MakeMap();
 	void Update(float elapsedTime);
 
 	bool BoxCollisionTest(float minX, float minY, float maxX, float maxY, float minX1, float minY1, float maxX1, float maxY1);

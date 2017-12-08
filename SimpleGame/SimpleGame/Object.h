@@ -9,8 +9,8 @@ public:
 	Object(float x, float y, int teamNum, int def);
 	~Object();
 	void Update(float elapsedTime);
+	void DamageCount(int Damage);
 	float GetObjX();
 	float GetObjY();
-	void DamageCount(int Damage);
 };
 
