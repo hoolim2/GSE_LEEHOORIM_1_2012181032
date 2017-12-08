@@ -25,7 +25,7 @@ SceneMngr::SceneMngr(int width, int height)
 	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/character_link.png");
 	B_texImage[4] = B_renderer->CreatePngTexture("./Resource/background_ground.png");
 	B_texImage[5] = B_renderer->CreatePngTexture("./Resource/particle.png");
-	soundBG = m_sound->CreateSound("./Resource/CheetahMenTheme.flac");
+	soundBG = m_sound->CreateSound("./Resource/BattleBGM.mp3");
 
 	if (!m_renderer->IsInitialized())
 	{
@@ -641,6 +641,6 @@ void SceneMngr::DeleteObj()
 
 void SceneMngr::GroundShaker(int amount)
 {
-	m_renderer->SetSceneTransform(amount, 0, 1, 1);
-	B_renderer->SetSceneTransform(amount, 0, 1, 1);
+	m_renderer->SetSceneTransform(amount*2, 0, 1, 1);
+	B_renderer->SetSceneTransform(amount*2, 0, 1, 1);
 }
