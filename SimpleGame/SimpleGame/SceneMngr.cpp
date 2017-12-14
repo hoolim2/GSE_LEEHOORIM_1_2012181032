@@ -8,24 +8,23 @@
 
 using namespace std;
 
-float objx = rand() % 250;
-float objy = rand() % 250;
+float whetherTime = 0.0;
 
 SceneMngr::SceneMngr(int width, int height)
 {
 	MakeMap();
 
 	m_renderer = new Renderer(width, height);
-	B_renderer = new Renderer(width, height);
-	m_sound = new Sound();
+	//m_sound = new Sound();
 
-	B_texImage[0] = B_renderer->CreatePngTexture("./Resource/resistance.png");
-	B_texImage[1] = B_renderer->CreatePngTexture("./Resource/polite.png");
-	B_texImage[2] = B_renderer->CreatePngTexture("./Resource/character_Darklink.png");
-	B_texImage[3] = B_renderer->CreatePngTexture("./Resource/character_link.png");
-	B_texImage[4] = B_renderer->CreatePngTexture("./Resource/background_ground.png");
-	B_texImage[5] = B_renderer->CreatePngTexture("./Resource/particle.png");
-	soundBG = m_sound->CreateSound("./Resource/BattleBGM.mp3");
+	B_texImage[0] = m_renderer->CreatePngTexture("./Resource/resistance.png");
+	B_texImage[1] = m_renderer->CreatePngTexture("./Resource/polite.png");
+	B_texImage[2] = m_renderer->CreatePngTexture("./Resource/character_Darklink.png");
+	B_texImage[3] = m_renderer->CreatePngTexture("./Resource/character_link.png");
+	B_texImage[4] = m_renderer->CreatePngTexture("./Resource/background_ground.png");
+	B_texImage[5] = m_renderer->CreatePngTexture("./Resource/particle.png");
+	B_texImage[6] = m_renderer->CreatePngTexture("./Resource/deatheffect.png");
+	//soundBG = m_sound->CreateSound("./Resource/BattleBGM.mp3");
 
 	if (!m_renderer->IsInitialized())
 	{
@@ -39,7 +38,7 @@ SceneMngr::SceneMngr(int width, int height)
 	{
 		m_objects[i] = NULL;
 	}
-	m_sound->PlaySound(soundBG, true, 100);
+	//m_sound->PlaySound(soundBG, true, 100);
 }
 
 SceneMngr::~SceneMngr()
@@ -59,7 +58,7 @@ void SceneMngr::MakeMap()
 
 void SceneMngr::DrawAllObj()
 {
-	B_renderer->DrawTexturedRect(0, 0, 0, 800, 1, 1, 1, 1, B_texImage[4], 0.9);
+	m_renderer->DrawTexturedRect(0, 0, 0, 800, 1, 1, 1, 1, B_texImage[4], 0.9);
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
 		if (m_objects[i] != NULL)
@@ -69,7 +68,7 @@ void SceneMngr::DrawAllObj()
 			{
 				if (m_objects[i]->team == UNIT_ENEMY)
 				{
-					B_renderer->DrawTexturedRect
+					m_renderer->DrawTexturedRect
 					(
 						m_objects[i]->x,
 						m_objects[i]->y,
@@ -113,7 +112,7 @@ void SceneMngr::DrawAllObj()
 				}
 				if (m_objects[i]->team == UNIT_ALLY)
 				{
-					B_renderer->DrawTexturedRect
+					m_renderer->DrawTexturedRect
 					(
 						m_objects[i]->x,
 						m_objects[i]->y,
@@ -159,7 +158,7 @@ void SceneMngr::DrawAllObj()
 			{
 				if (m_objects[i]->team == UNIT_ENEMY)
 				{
-					B_renderer->DrawTexturedRectSeq
+					m_renderer->DrawTexturedRectSeq
 					(
 						m_objects[i]->x,
 						m_objects[i]->y,
@@ -207,7 +206,7 @@ void SceneMngr::DrawAllObj()
 				}
 				else if (m_objects[i]->team == UNIT_ALLY)
 				{
-					B_renderer->DrawTexturedRectSeq
+					m_renderer->DrawTexturedRectSeq
 					(
 						m_objects[i]->x,
 						m_objects[i]->y,
@@ -254,21 +253,104 @@ void SceneMngr::DrawAllObj()
 					);
 				}
 			}
+			else if (m_objects[i]->type == OBJECT_DEATHCHARACTER)
+			{
+				if (m_objects[i]->team == UNIT_ENEMY)
+				{
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size,
+						0,
+						m_objects[i]->size,
+						9,
+						1,
+						0,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
+						(float)m_objects[i]->attacklife / m_objects[i]->maxLife,
+						0.2
+					);
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size,
+						0,
+						m_objects[i]->size,
+						9,
+						1,
+						1,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.3,
+						(float)m_objects[i]->life / m_objects[i]->maxLife,
+						0.1
+					);
+				}
+				else if (m_objects[i]->team == UNIT_ALLY)
+				{
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size,
+						0,
+						m_objects[i]->size,
+						9,
+						1,
+						0,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.2,
+						(float)m_objects[i]->attacklife / m_objects[i]->maxLife,
+						0.2
+					);
+					m_renderer->DrawSolidRectGauge
+					(
+						m_objects[i]->x,
+						m_objects[i]->y + m_objects[i]->size,
+						0,
+						m_objects[i]->size,
+						9,
+						0,
+						1,
+						0,
+						(float)m_objects[i]->life / m_objects[i]->maxLife + 0.2,
+						(float)m_objects[i]->life / m_objects[i]->maxLife,
+						0.1
+					);
+				}
+				m_renderer->DrawTexturedRectSeq
+				(
+					m_objects[i]->x,
+					m_objects[i]->y,
+					0,
+					m_objects[i]->size,
+					m_objects[i]->r,
+					m_objects[i]->g,
+					m_objects[i]->b,
+					m_objects[i]->a,
+					B_texImage[6],
+					m_objects[i]->characterAnmation,
+					0,
+					4,
+					4,
+					0.1
+				);
+			}
 			else
 			{
 				m_renderer->DrawParticle(
 					m_objects[i]->x,
 					m_objects[i]->y,
 					0,
-					10,//size
+					15,//size
 					m_objects[i]->r,
 					m_objects[i]->g,
 					m_objects[i]->b,
 					m_objects[i]->a,
-					-m_objects[i]->vecx * 4,
-					-m_objects[i]->vecy * 4,
+					-m_objects[i]->vecx * 1.5,
+					-m_objects[i]->vecy * 1.5,
 					B_texImage[5],
-					m_objects[i]->particleTime
+					m_objects[i]->particleTime,
+					0.1
 				);
 				m_renderer->DrawSolidRect(
 					m_objects[i]->x,
@@ -284,6 +366,7 @@ void SceneMngr::DrawAllObj()
 			}
 		}
 	}
+	m_renderer->DrawParticleClimate(0, 0, 0, 1.5, 1, 1, 1, 1, -0.1, -0.1, B_texImage[5], whetherTime, 0.01);
 }
 
 int SceneMngr::AddCommonObj(float x, float y, int team)
@@ -352,6 +435,19 @@ int SceneMngr::AddArrowObj(int index)
 	return -1;
 }
 
+int SceneMngr::AddDeathmotion(int x, int y)
+{
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+	{
+		if (m_objects[i] == NULL)
+		{
+			m_objects[i] = new Object(x, y, -1, OBJECT_DEATHCHARACTER);
+			return i;
+		}
+	}
+return -1;
+}
+
 void SceneMngr::CollideCheck()
 {
 	int collisionCount = 0;
@@ -417,7 +513,6 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
-									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -430,7 +525,6 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
-									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -445,7 +539,6 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[i]->DamageCount(m_objects[j]->life);
-									GroundShaker(m_objects[j]->life);
 									m_objects[j]->life = 0.f;
 									collisionCount++;
 								}
@@ -460,7 +553,6 @@ void SceneMngr::CollideCheck()
 									)
 								{
 									m_objects[j]->DamageCount(m_objects[i]->life);
-									GroundShaker(m_objects[i]->life);
 									m_objects[i]->life = 0.f;
 									collisionCount++;
 								}
@@ -527,6 +619,7 @@ void SceneMngr::CollideCheck()
 				m_objects[i]->g = 0;
 				m_objects[i]->b = 0;
 				m_objects[i]->a = 1;
+				ChangeObj();
 				DeleteObj();
 			}
 			else
@@ -612,14 +705,34 @@ bool SceneMngr::BoxCollisionTest(float minX, float minY, float maxX, float maxY,
 
 void SceneMngr::Update(float elapsedTime)
 {
+	whetherTime += 0.01;
 	m_renderer->SetSceneTransform(0, 0, 1, 1);
-	B_renderer->SetSceneTransform(0, 0, 1, 1);
 	CollideCheck();
 	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
 	{
 		if (m_objects[i] != NULL)
 		{
 			m_objects[i]->Update(elapsedTime);
+		}
+	}
+}
+void SceneMngr::ChangeObj()
+{
+	for (int i = 0; i < MAX_OBJECTS_COUNT; i++)
+	{
+		if (m_objects[i] != NULL)
+		{
+			if (m_objects[i]->life <= 0)
+			{
+				if (m_objects[i]->type = OBJECT_CHARACTER)
+				{
+					m_objects[i]->spd = 0;
+					m_objects[i]->vecx = 0;
+					m_objects[i]->vecy = 0;
+					m_objects[i]->type = OBJECT_DEATHCHARACTER;
+					m_objects[i]->lifeTime = 1.f;
+				}
+			}
 		}
 	}
 }
@@ -630,11 +743,20 @@ void SceneMngr::DeleteObj()
 	{
 		if (m_objects[i] != NULL)
 		{
-			if (m_objects[i]->life <= 0)
+			if (!(m_objects[i]->type == OBJECT_CHARACTER || m_objects[i]->type == OBJECT_DEATHCHARACTER))
 			{
-				delete m_objects[i];
-				m_objects[i] = NULL;
+				if (m_objects[i]->life <= 0)
+				{
+					delete m_objects[i];
+					m_objects[i] = NULL;
+				}
 			}
+			else
+				if (m_objects[i]->lifeTime <0)
+				{
+					delete m_objects[i];
+					m_objects[i] = NULL;
+				}
 		}
 	}
 }
@@ -642,5 +764,4 @@ void SceneMngr::DeleteObj()
 void SceneMngr::GroundShaker(int amount)
 {
 	m_renderer->SetSceneTransform(amount*2, 0, 1, 1);
-	B_renderer->SetSceneTransform(amount*2, 0, 1, 1);
 }

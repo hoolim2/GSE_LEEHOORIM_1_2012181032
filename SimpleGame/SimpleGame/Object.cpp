@@ -19,6 +19,7 @@ Object::Object(float objx, float objy, int teamNum, int def)
 			g = 1;
 			b = 1;
 			a = 1;
+			vecy = -0.5;
 		}
 		else if (teamNum == UNIT_ALLY)
 		{
@@ -29,14 +30,15 @@ Object::Object(float objx, float objy, int teamNum, int def)
 			g = 1;
 			b = 1;
 			a = 1;
+			vecy = 0.5;
 		}
+		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		size = 50;
 		spd = 100;
-		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
-		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		type = def;
 		bulletCoolTime = 0;
 		team = teamNum;
+		lifeTime = 60000;
 		maxLife = 30;
 		life = maxLife;
 		attacklife = maxLife;
@@ -61,6 +63,7 @@ Object::Object(float objx, float objy, int teamNum, int def)
 		vecy = 0;
 		type = def;
 		team = teamNum;
+		lifeTime = 60000;
 		maxLife = 500;
 		life = maxLife;
 		attacklife = maxLife;
@@ -74,13 +77,14 @@ Object::Object(float objx, float objy, int teamNum, int def)
 		x = objx;
 		y = objy;
 		z = 0;
-		size = 5;
+		size = 10;
 		if (teamNum == UNIT_ENEMY)
 		{
 			r = 1;
 			g = 0.2;
 			b = 0.5;
 			a = 1;
+			vecy = -0.5;
 		}
 		else if (teamNum == UNIT_ALLY)
 		{
@@ -88,21 +92,22 @@ Object::Object(float objx, float objy, int teamNum, int def)
 			g = 1;
 			b = 0.2;
 			a = 1;
+			vecy = 0.5;
 		}
-		spd = 500;
+		spd = 300;
 		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
-		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		if (vecy < 0.3&&vecy >0)
 			vecy += 0.2;
 		if (vecy > -0.3&&vecy <0)
 			vecy -= 0.2;
 		type = def;
 		team = teamNum;
+		lifeTime = 60000;
 		maxLife = 10;
 		life = maxLife;
 		attacklife = maxLife;
 		attacked = false;
-		particleTime = 0;
+		particleTime = 0.0;
 	}
 	//Arrow
 	else if (def == OBJECT_ARROW)
@@ -110,13 +115,14 @@ Object::Object(float objx, float objy, int teamNum, int def)
 		x = objx;
 		y = objy;
 		z = 0;
-		size = 5;
+		size = 10;
 		if (teamNum == UNIT_ENEMY)
 		{
 			r = 0.5;
 			g = 0.2;
 			b = 0.7;
 			a = 1;
+			vecy = -0.5;
 		}
 		else if (teamNum == UNIT_ALLY)
 		{
@@ -124,8 +130,9 @@ Object::Object(float objx, float objy, int teamNum, int def)
 			g = 1;
 			b = 0;
 			a = 1;
+			vecy = 0.5;
 		}
-		spd = 500;
+		spd = 300;
 		vecx = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		vecy = (((float)std::rand() / (float)RAND_MAX) - 0.5f);
 		if (vecy < 0.3&&vecy >0)
@@ -134,11 +141,12 @@ Object::Object(float objx, float objy, int teamNum, int def)
 			vecy -= 0.2;
 		type = def;
 		team = teamNum;
+		lifeTime = 60000;
 		maxLife = 20;
 		life = maxLife;
 		attacklife = maxLife;
 		attacked = false;
-		particleTime = 0;
+		particleTime = 0.0;
 	}
 }
 
@@ -172,6 +180,9 @@ void Object::Update(float elapsedTime)
 		characterAnmation = characterAnmation % 10;
 		animateTime = 0;
 	}
+
+	if (life <= 0)
+		lifeTime -= elapsedTimeSecond;
 
 	if (type == OBJECT_BULLET || type == OBJECT_ARROW)
 	{
